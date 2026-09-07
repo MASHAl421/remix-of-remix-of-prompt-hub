@@ -142,16 +142,17 @@ function PromptForm() {
     setBusy(true);
     try {
       const imagePath = await uploadImage(file);
-      const { data, error } = await supabase
+      // Pending rows aren't readable by visitors, so generate the id instead of
+      // asking the insert to return it.
+      const promptId = crypto.randomUUID();
+      const { error } = await supabase
         .from("prompts")
-        .insert({ ...parsed.data, tags, image_path: imagePath })
-        .select("id")
-        .single();
+        .insert({ id: promptId, ...parsed.data, tags, image_path: imagePath });
       if (error) throw error;
 
       const validLinks = competitors
         .filter((c) => c.url.trim().length > 4)
-        .map((c) => ({ prompt_id: data.id, label: c.label.trim() || null, url: c.url.trim() }));
+        .map((c) => ({ prompt_id: promptId, label: c.label.trim() || null, url: c.url.trim() }));
       if (validLinks.length > 0) {
         const { error: linkError } = await supabase.from("prompt_links").insert(validLinks);
         if (linkError) throw linkError;
