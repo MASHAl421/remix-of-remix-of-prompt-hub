@@ -87,46 +87,48 @@ function Home() {
     <div className="min-h-screen font-sans">
       <SiteHeader />
       <main className="mx-auto max-w-6xl px-4">
-        <section className="animate-rise-in py-16">
-          <p className="text-sm uppercase tracking-[0.28em] text-primary">Master prompt library</p>
-          <h1 className="text-cinema mt-4 max-w-3xl font-display text-4xl font-bold leading-[1.08] sm:text-6xl">
+        <section className="animate-rise-in py-10 sm:py-16">
+          <p className="text-xs uppercase tracking-[0.28em] text-primary sm:text-sm">
+            Master prompt library
+          </p>
+          <h1 className="text-cinema mt-3 max-w-3xl font-display text-3xl font-bold leading-[1.1] sm:mt-4 sm:text-5xl lg:text-6xl">
             Every winning prompt, filed by niche.
           </h1>
-          <p className="mt-4 max-w-2xl text-muted-foreground">
+          <p className="mt-3 max-w-2xl text-sm text-muted-foreground sm:mt-4 sm:text-base">
             Search reviewed master prompts with their reference image and the competitor pages they
             came from. Anyone can add one — we review each submission before it goes live.
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:mt-6 sm:flex sm:flex-wrap">
             <Link
               to="/submit"
-              className="rounded-lg bg-gradient-to-r from-primary to-chart-2 px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:scale-105"
+              className="rounded-lg bg-gradient-to-r from-primary to-chart-2 px-5 py-3 text-center text-sm font-medium text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:scale-105 sm:py-2.5"
             >
               Submit a prompt
             </Link>
             <Link
               to="/links"
-              className="glass rounded-lg px-5 py-2.5 text-sm transition-colors hover:border-primary/60"
+              className="glass rounded-lg px-5 py-3 text-center text-sm transition-colors hover:border-primary/60 sm:py-2.5"
             >
               Browse links
             </Link>
           </div>
         </section>
 
-        <section className="glass animate-rise-in space-y-4 rounded-2xl p-4">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="relative flex-1 min-w-56">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search prompts…"
-                className="w-full rounded-lg border border-glass-border bg-background/40 py-2 pl-9 pr-3 text-sm outline-none backdrop-blur focus:border-primary"
-              />
-            </div>
+        <section className="glass animate-rise-in space-y-3 rounded-2xl p-3 sm:space-y-4 sm:p-4">
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search prompts…"
+              className="w-full rounded-lg border border-glass-border bg-background/40 py-2.5 pl-9 pr-3 text-sm outline-none backdrop-blur focus:border-primary"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="rounded-lg border border-glass-border bg-background/40 px-3 py-2 text-sm backdrop-blur"
+              className="min-w-0 rounded-lg border border-glass-border bg-background/40 px-3 py-2.5 text-sm backdrop-blur"
             >
               <option value="All">All categories</option>
               {CATEGORIES.map((c) => (
@@ -138,7 +140,7 @@ function Home() {
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as "new" | "liked")}
-              className="rounded-lg border border-glass-border bg-background/40 px-3 py-2 text-sm backdrop-blur"
+              className="min-w-0 rounded-lg border border-glass-border bg-background/40 px-3 py-2.5 text-sm backdrop-blur"
             >
               <option value="new">Newest</option>
               <option value="liked">Most liked</option>
@@ -147,22 +149,36 @@ function Home() {
               type="button"
               onClick={() => setOnlySaved((v) => !v)}
               className={cn(
-                "rounded-lg border border-glass-border bg-background/40 px-3 py-2 text-sm backdrop-blur transition-colors hover:border-primary/60",
+                "rounded-lg border border-glass-border bg-background/40 px-3 py-2.5 text-sm backdrop-blur transition-colors hover:border-primary/60",
                 onlySaved && "border-primary/60 text-primary",
               )}
             >
               Saved ({saved.length})
             </button>
+            {(tag || category !== "All" || search || onlySaved) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setTag("");
+                  setCategory("All");
+                  setSearch("");
+                  setOnlySaved(false);
+                }}
+                className="rounded-lg border border-glass-border bg-background/40 px-3 py-2.5 text-sm text-muted-foreground backdrop-blur"
+              >
+                Clear
+              </button>
+            )}
           </div>
           {allTags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
+            <div className="scroll-row -mx-1 px-1 sm:flex-wrap sm:overflow-visible">
               {allTags.map((t) => (
                 <button
                   key={t}
                   type="button"
                   onClick={() => setTag(tag === t ? "" : t)}
                   className={cn(
-                    "rounded-full border border-glass-border px-3 py-1 text-xs text-muted-foreground backdrop-blur transition-colors hover:border-primary/50",
+                    "rounded-full border border-glass-border px-3 py-1.5 text-xs text-muted-foreground backdrop-blur transition-colors hover:border-primary/50",
                     tag === t && "border-primary/60 text-primary",
                   )}
                 >
@@ -173,7 +189,7 @@ function Home() {
           )}
         </section>
 
-        <section className="py-8">
+        <section className="py-6 sm:py-8">
           {isLoading ? (
             <p className="py-16 text-center text-muted-foreground">Loading prompts…</p>
           ) : visible.length === 0 ? (
@@ -181,20 +197,26 @@ function Home() {
               Nothing here yet. Be the first to submit a master prompt.
             </p>
           ) : (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {visible.map((p, i) => (
-                <PromptCard
-                  key={p.id}
-                  index={i}
-                  prompt={p}
-                  liked={likedIds.has(p.id)}
-                  saved={saved.includes(p.id)}
-                  links={linksByPrompt.get(p.id) ?? []}
-                />
-              ))}
-            </div>
+            <>
+              <p className="pb-3 text-xs text-muted-foreground">
+                {visible.length} prompt{visible.length === 1 ? "" : "s"}
+              </p>
+              <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+                {visible.map((p, i) => (
+                  <PromptCard
+                    key={p.id}
+                    index={i}
+                    prompt={p}
+                    liked={likedIds.has(p.id)}
+                    saved={saved.includes(p.id)}
+                    links={linksByPrompt.get(p.id) ?? []}
+                  />
+                ))}
+              </div>
+            </>
           )}
         </section>
+
       </main>
       <SiteFooter />
     </div>
