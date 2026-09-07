@@ -125,7 +125,7 @@ export function CinematicBackground() {
 
         {/* drifting wildlife */}
         {CREATURES.map((c, i) => (
-          <Swimmer key={i} c={c} i={i} />
+          <Swimmer key={i} c={c} i={i} mobileHidden={i % 2 === 1} />
         ))}
 
         {/* rising bubbles */}
