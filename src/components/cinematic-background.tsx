@@ -37,17 +37,18 @@ const TURTLE =
   "M14 40c0-14 12-24 28-24s28 10 28 24c0 4-2 6-6 6H20c-4 0-6-2-6-6zm-8 2c-4 0-6 2-6 5s3 5 7 4l6-2zm70 0 6 7c4 1 7-1 7-4s-2-5-6-5zM24 48l-4 10h6l4-10zm34 0 4 10h6l-4-10z";
 
 const CREATURES: Creature[] = [
-  { path: FISH, viewBox: "0 0 104 64", top: 14, size: 74, duration: 46, delay: 0, direction: "right", opacity: 0.16 },
-  { path: FISH, viewBox: "0 0 104 64", top: 62, size: 48, duration: 62, delay: 8, direction: "left", opacity: 0.13 },
-  { path: FISH, viewBox: "0 0 104 64", top: 86, size: 34, duration: 38, delay: 20, direction: "right", opacity: 0.1 },
-  { path: WHALE, viewBox: "0 0 176 78", top: 40, size: 150, duration: 96, delay: 4, direction: "left", opacity: 0.09 },
-  { path: JELLY, viewBox: "0 0 80 78", top: 72, size: 60, duration: 78, delay: 14, direction: "right", opacity: 0.11 },
-  { path: BIRD, viewBox: "0 0 96 62", top: 8, size: 46, duration: 34, delay: 6, direction: "left", opacity: 0.14 },
-  { path: BIRD, viewBox: "0 0 96 62", top: 26, size: 30, duration: 42, delay: 18, direction: "left", opacity: 0.1 },
-  { path: BUTTERFLY, viewBox: "0 0 88 78", top: 50, size: 36, duration: 52, delay: 2, direction: "right", opacity: 0.14 },
-  { path: BUTTERFLY, viewBox: "0 0 88 78", top: 32, size: 26, duration: 66, delay: 26, direction: "left", opacity: 0.11 },
-  { path: TURTLE, viewBox: "0 0 90 62", top: 78, size: 62, duration: 88, delay: 10, direction: "right", opacity: 0.1 },
-  { path: DEER, viewBox: "0 0 84 76", top: 94, size: 54, duration: 72, delay: 30, direction: "left", opacity: 0.09 },
+  { path: FISH, viewBox: "0 0 104 64", top: 12, size: 88, duration: 20, delay: 0, direction: "right", opacity: 0.4 },
+  { path: FISH, viewBox: "0 0 104 64", top: 58, size: 60, duration: 26, delay: 5, direction: "left", opacity: 0.34 },
+  { path: FISH, viewBox: "0 0 104 64", top: 84, size: 44, duration: 16, delay: 9, direction: "right", opacity: 0.3 },
+  { path: FISH, viewBox: "0 0 104 64", top: 36, size: 36, duration: 23, delay: 13, direction: "left", opacity: 0.26 },
+  { path: WHALE, viewBox: "0 0 176 78", top: 44, size: 170, duration: 40, delay: 3, direction: "left", opacity: 0.22 },
+  { path: JELLY, viewBox: "0 0 80 78", top: 70, size: 66, duration: 32, delay: 7, direction: "right", opacity: 0.28 },
+  { path: BIRD, viewBox: "0 0 96 62", top: 6, size: 52, duration: 14, delay: 2, direction: "left", opacity: 0.34 },
+  { path: BIRD, viewBox: "0 0 96 62", top: 22, size: 34, duration: 18, delay: 8, direction: "left", opacity: 0.28 },
+  { path: BUTTERFLY, viewBox: "0 0 88 78", top: 50, size: 40, duration: 22, delay: 1, direction: "right", opacity: 0.32 },
+  { path: BUTTERFLY, viewBox: "0 0 88 78", top: 30, size: 28, duration: 28, delay: 11, direction: "left", opacity: 0.28 },
+  { path: TURTLE, viewBox: "0 0 90 62", top: 76, size: 68, duration: 36, delay: 6, direction: "right", opacity: 0.26 },
+  { path: DEER, viewBox: "0 0 84 76", top: 92, size: 58, duration: 30, delay: 15, direction: "left", opacity: 0.24 },
 ];
 
 const BUBBLES = Array.from({ length: 14 }, (_, i) => ({
@@ -95,8 +96,8 @@ export function CinematicBackground() {
             viewBox={c.viewBox}
             width={c.size}
             height={c.size * 0.7}
-            className="text-primary"
-            style={{ opacity: c.opacity, animation: `bob ${6 + (i % 5)}s ease-in-out infinite` }}
+            className="text-primary drop-shadow-[0_0_14px_oklch(0.85_0.16_170/0.5)]"
+            style={{ opacity: c.opacity, animation: `bob ${3 + (i % 4)}s ease-in-out infinite` }}
           >
             <path d={c.path} fill="currentColor" />
           </svg>
@@ -119,7 +120,7 @@ export function CinematicBackground() {
       ))}
 
       {/* cinematic vignette keeps text crisp */}
-      <div className="absolute inset-0 bg-[radial-gradient(75%_60%_at_50%_40%,transparent,oklch(0.12_0.01_60/0.72))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(75%_60%_at_50%_40%,transparent,oklch(0.12_0.01_60/0.6))]" />
     </div>
   );
 }
