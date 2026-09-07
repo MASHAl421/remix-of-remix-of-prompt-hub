@@ -8,7 +8,7 @@ import { SiteFooter, SiteHeader } from "@/components/site-header";
 import { StorageImage } from "@/components/storage-image";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/use-session";
-import { imagesQuery, linksQuery, promptsQuery, type Status } from "@/lib/api";
+import { allPromptLinksQuery, imagesQuery, linksQuery, promptsQuery, type Status } from "@/lib/api";
 import { inviteAdmin, listAdmins, removeAdmin } from "@/lib/admins.functions";
 import { cn } from "@/lib/utils";
 
@@ -62,10 +62,10 @@ function AdminPage() {
   return (
     <div className="min-h-screen font-sans">
       <SiteHeader />
-      <main className="mx-auto max-w-6xl px-4 py-10">
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="font-display text-3xl font-bold">Review queue</h1>
+            <h1 className="font-display text-2xl font-bold sm:text-3xl">Review queue</h1>
             <p className="mt-2 text-muted-foreground">
               Nothing is public until you approve it here.
             </p>
@@ -73,7 +73,7 @@ function AdminPage() {
           <SignOutButton />
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="scroll-row mt-6">
           {(
             [
               ["prompts", "Prompts"],
@@ -104,7 +104,7 @@ function AdminPage() {
         </div>
 
         {tab !== "admins" && (
-          <div className="mt-4 flex gap-2">
+          <div className="scroll-row mt-4">
             {(["pending", "approved", "rejected"] as Status[]).map((s) => (
               <button
                 key={s}
@@ -281,7 +281,15 @@ function Empty({ label }: { label: string }) {
 
 function PromptQueue({ status }: { status: Status }) {
   const { data = [], isLoading } = useQuery(promptsQuery(status));
+  const { data: allLinks = [] } = useQuery(allPromptLinksQuery());
   const { setStatus, remove } = useModeration("prompts", "prompts");
+
+  const linksByPrompt = new Map<string, typeof allLinks>();
+  for (const l of allLinks) {
+    const arr = linksByPrompt.get(l.prompt_id) ?? [];
+    arr.push(l);
+    linksByPrompt.set(l.prompt_id, arr);
+  }
 
   if (isLoading) return <Empty label="loading" />;
   if (data.length === 0) return <Empty label={status} />;
@@ -305,6 +313,33 @@ function PromptQueue({ status }: { status: Status }) {
               <pre className="mt-3 max-h-40 overflow-auto whitespace-pre-wrap rounded-md bg-secondary/40 p-3 font-sans text-sm">
                 {p.prompt_text}
               </pre>
+              {(() => {
+                const promptLinks = linksByPrompt.get(p.id) ?? [];
+                return promptLinks.length > 0 ? (
+                  <div className="mt-3 rounded-md border border-border/60 bg-secondary/20 p-3">
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      Competitor pages & channels
+                    </p>
+                    <ul className="mt-2 space-y-1">
+                      {promptLinks.map((l) => (
+                        <li key={l.id}>
+                          <a
+                            href={l.url}
+                            target="_blank"
+                            rel="noopener noreferrer nofollow"
+                            className="inline-flex items-start gap-1.5 text-sm text-primary hover:underline"
+                          >
+                            <ExternalLink className="mt-0.5 size-3.5 shrink-0" />
+                            <span className="break-all">{l.label || l.url}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <p className="mt-3 text-xs text-muted-foreground">No competitor links submitted.</p>
+                );
+              })()}
               {p.rejection_note && (
                 <p className="mt-2 text-sm text-destructive">Note: {p.rejection_note}</p>
               )}
