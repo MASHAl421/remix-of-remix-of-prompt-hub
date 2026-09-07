@@ -63,7 +63,7 @@ function PromptDetail() {
   return (
     <div className="min-h-screen font-sans">
       <SiteHeader />
-      <main className="mx-auto max-w-5xl px-4 py-8">
+      <main className="mx-auto max-w-5xl px-4 py-6 sm:py-8">
         <Link
           to="/"
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
@@ -78,8 +78,8 @@ function PromptDetail() {
             This prompt isn't available. It may still be waiting for review.
           </p>
         ) : (
-          <div className="mt-6 grid gap-6 md:grid-cols-[1fr_300px]">
-            <article className="min-w-0 space-y-6">
+          <div className="mt-5 grid gap-5 sm:mt-6 sm:gap-6 md:grid-cols-[minmax(0,1fr)_300px]">
+            <article className="order-2 min-w-0 space-y-5 sm:space-y-6 md:order-1">
               <StorageImage
                 path={prompt.image_path}
                 alt={prompt.title}
@@ -98,9 +98,9 @@ function PromptDetail() {
                   </span>
                 ))}
               </div>
-              <h1 className="text-cinema font-display text-3xl font-bold">{prompt.title}</h1>
+              <h1 className="text-cinema font-display text-2xl font-bold leading-tight sm:text-3xl">{prompt.title}</h1>
 
-              <div className="glass-strong animate-rise-in rounded-2xl p-5">
+              <div className="glass-strong animate-rise-in rounded-2xl p-4 sm:p-5">
                 <div className="mb-3 flex items-center justify-between">
                   <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     Master prompt
@@ -116,7 +116,7 @@ function PromptDetail() {
                     <Copy className="size-3.5" /> Copy prompt
                   </button>
                 </div>
-                <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">
+                <pre className="max-h-[60vh] overflow-y-auto whitespace-pre-wrap break-words font-sans text-sm leading-relaxed sm:max-h-none">
                   {prompt.prompt_text}
                 </pre>
               </div>
@@ -152,7 +152,7 @@ function PromptDetail() {
             </article>
 
             {links.length > 0 && (
-              <aside className="md:sticky md:top-24 md:self-start">
+              <aside className="order-1 md:order-2 md:sticky md:top-24 md:self-start">
                 <div className="glass rounded-2xl p-4">
                   <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                     Competitor pages & channels

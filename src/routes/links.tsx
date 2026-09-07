@@ -58,23 +58,23 @@ function LinksPage() {
   return (
     <div className="min-h-screen font-sans">
       <SiteHeader />
-      <main className="mx-auto max-w-4xl px-4 py-10">
-        <h1 className="font-display text-3xl font-bold">Important links</h1>
+      <main className="mx-auto max-w-4xl px-4 py-8 sm:py-10">
+        <h1 className="font-display text-2xl font-bold sm:text-3xl">Important links</h1>
         <p className="mt-2 text-muted-foreground">
           Tools, tutorials, channels and communities the community keeps coming back to.
         </p>
 
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="mt-6 grid gap-2 sm:flex sm:flex-wrap sm:gap-3">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search links…"
-            className="min-w-56 flex-1 rounded-md border border-glass-border bg-background/40 backdrop-blur px-3 py-2 text-sm outline-none focus:border-primary"
+            className="w-full flex-1 rounded-md border border-glass-border bg-background/40 backdrop-blur px-3 py-2.5 text-sm outline-none focus:border-primary sm:min-w-56 sm:w-auto"
           />
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="rounded-md border border-glass-border bg-background/40 backdrop-blur px-3 py-2 text-sm"
+            className="w-full rounded-md border border-glass-border bg-background/40 backdrop-blur px-3 py-2.5 text-sm sm:w-auto"
           >
             <option value="All">All types</option>
             {LINK_TYPES.map((t) => (
@@ -96,7 +96,7 @@ function LinksPage() {
               return (
                 <li
                   key={l.id}
-                  className="flex items-start gap-4 glass rounded-2xl p-4"
+                  className="flex items-start gap-3 glass rounded-2xl p-3.5 sm:gap-4 sm:p-4"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
