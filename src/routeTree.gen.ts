@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PromptsPromptIdRouteImport } from './routes/prompts.$promptId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PromptsPromptIdRoute = PromptsPromptIdRouteImport.update({
+  id: '/prompts/$promptId',
+  path: '/prompts/$promptId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/prompts/$promptId': typeof PromptsPromptIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/prompts/$promptId': typeof PromptsPromptIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/prompts/$promptId': typeof PromptsPromptIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/prompts/$promptId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/prompts/$promptId'
+  id: '__root__' | '/' | '/prompts/$promptId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PromptsPromptIdRoute: typeof PromptsPromptIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/prompts/$promptId': {
+      id: '/prompts/$promptId'
+      path: '/prompts/$promptId'
+      fullPath: '/prompts/$promptId'
+      preLoaderRoute: typeof PromptsPromptIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PromptsPromptIdRoute: PromptsPromptIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
