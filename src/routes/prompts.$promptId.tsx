@@ -101,22 +101,27 @@ function PromptDetail() {
             <h1 className="font-display text-3xl font-bold">{prompt.title}</h1>
 
             <div className="rounded-xl border border-border/60 bg-card p-5">
+              <div className="mb-3 flex items-center justify-between">
+                <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Master prompt
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    void navigator.clipboard.writeText(prompt.prompt_text);
+                    toast.success("Prompt copied");
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                >
+                  <Copy className="size-3.5" /> Copy prompt
+                </button>
+              </div>
               <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">
                 {prompt.prompt_text}
               </pre>
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  void navigator.clipboard.writeText(prompt.prompt_text);
-                  toast.success("Prompt copied");
-                }}
-                className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-              >
-                <Copy className="size-4" /> Copy prompt
-              </button>
               <button
                 type="button"
                 onClick={() => like.mutate()}

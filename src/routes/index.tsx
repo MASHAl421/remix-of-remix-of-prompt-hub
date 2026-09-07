@@ -5,7 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { SiteFooter, SiteHeader } from "@/components/site-header";
 import { PromptCard } from "@/components/prompt-card";
-import { myLikesQuery, promptsQuery } from "@/lib/api";
+import { allPromptLinksQuery, myLikesQuery, promptsQuery } from "@/lib/api";
 import { CATEGORIES } from "@/lib/constants";
 import { getSavedPrompts } from "@/lib/visitor";
 import { cn } from "@/lib/utils";
@@ -32,6 +32,17 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { data: prompts = [], isLoading } = useQuery(promptsQuery());
   const { data: likes = [] } = useQuery(myLikesQuery());
+  const { data: allLinks = [] } = useQuery(allPromptLinksQuery());
+
+  const linksByPrompt = useMemo(() => {
+    const map = new Map<string, typeof allLinks>();
+    for (const l of allLinks) {
+      const arr = map.get(l.prompt_id) ?? [];
+      arr.push(l);
+      map.set(l.prompt_id, arr);
+    }
+    return map;
+  }, [allLinks]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string>("All");
   const [tag, setTag] = useState<string>("");
@@ -177,6 +188,7 @@ function Home() {
                   prompt={p}
                   liked={likedIds.has(p.id)}
                   saved={saved.includes(p.id)}
+                  links={linksByPrompt.get(p.id) ?? []}
                 />
               ))}
             </div>
