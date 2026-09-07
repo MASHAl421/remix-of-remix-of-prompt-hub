@@ -280,3 +280,52 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+/* ── Mobile ergonomics ───────────────────────────────────────── */
+
+@layer base {
+  html {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Prevent iOS zoom-on-focus for form controls */
+  @media (max-width: 767px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px;
+    }
+  }
+}
+
+@utility safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility scroll-row {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  & > * {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+}
