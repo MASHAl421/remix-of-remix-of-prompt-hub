@@ -60,10 +60,20 @@ const BUBBLES = Array.from({ length: 16 }, (_, i) => ({
   delay: (i * 2.1) % 22,
 }));
 
-function Swimmer({ c, i, blur }: { c: Creature; i: number; blur?: boolean }) {
+function Swimmer({
+  c,
+  i,
+  blur,
+  mobileHidden,
+}: {
+  c: Creature;
+  i: number;
+  blur?: boolean;
+  mobileHidden?: boolean;
+}) {
   return (
     <div
-      className="absolute left-0"
+      className={mobileHidden ? "absolute left-0 hidden sm:block" : "absolute left-0"}
       style={{
         top: `${c.top}vh`,
         animation: `${c.direction === "right" ? "swim-right" : "swim-left"} ${c.duration}s linear infinite`,
@@ -76,7 +86,7 @@ function Swimmer({ c, i, blur }: { c: Creature; i: number; blur?: boolean }) {
         loading="lazy"
         width={c.size}
         style={{
-          width: c.size,
+          width: `min(${c.size}px, 40vw)`,
           height: "auto",
           opacity: c.opacity,
           filter: blur
