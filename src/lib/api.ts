@@ -86,6 +86,19 @@ export const promptLinksQuery = (id: string) =>
     },
   });
 
+export const allPromptLinksQuery = () =>
+  queryOptions({
+    queryKey: ["prompt-links"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("prompt_links")
+        .select("*")
+        .order("created_at");
+      if (error) throw error;
+      return (data ?? []) as PromptLink[];
+    },
+  });
+
 export const linksQuery = (status: Status = "approved") =>
   queryOptions({
     queryKey: ["links", status],

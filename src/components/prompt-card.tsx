@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { Bookmark, Copy, Eye, Heart } from "lucide-react";
+import { Bookmark, Copy, Eye, ExternalLink, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Prompt } from "@/lib/api";
+import type { Prompt, PromptLink } from "@/lib/api";
 import { toggleLike } from "@/lib/api";
 import { StorageImage } from "@/components/storage-image";
 import { toggleSavedPrompt } from "@/lib/visitor";
@@ -12,10 +12,12 @@ export function PromptCard({
   prompt,
   liked,
   saved,
+  links = [],
 }: {
   prompt: Prompt;
   liked: boolean;
   saved: boolean;
+  links?: PromptLink[];
 }) {
   const qc = useQueryClient();
   const like = useMutation({
@@ -56,6 +58,27 @@ export function PromptCard({
                 #{tag}
               </span>
             ))}
+          </div>
+        )}
+        {links.length > 0 && (
+          <div className="flex flex-col gap-1.5 border-t border-border/40 pt-2">
+            <p className="text-xs font-medium text-muted-foreground">Competitor links</p>
+            <ul className="space-y-1">
+              {links.slice(0, 3).map((l) => (
+                <li key={l.id}>
+                  <a
+                    href={l.url}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    onClick={(e) => e.stopPropagation()}
+                    className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                  >
+                    <ExternalLink className="size-3" />
+                    {l.label || l.url}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
         <div className="mt-auto flex items-center gap-2 pt-2">
