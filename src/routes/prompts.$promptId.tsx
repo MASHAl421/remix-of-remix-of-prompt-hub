@@ -64,7 +64,7 @@ function PromptDetail() {
   return (
     <div className="min-h-screen font-sans">
       <SiteHeader />
-      <main className="mx-auto max-w-4xl px-4 py-8">
+      <main className="mx-auto max-w-5xl px-4 py-8">
         <Link
           to="/"
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
@@ -76,96 +76,102 @@ function PromptDetail() {
           <p className="py-20 text-center text-muted-foreground">Loading…</p>
         ) : !prompt ? (
           <p className="py-20 text-center text-muted-foreground">
-            This prompt isn&apos;t available. It may still be waiting for review.
+            This prompt isn't available. It may still be waiting for review.
           </p>
         ) : (
-          <article className="mt-6 space-y-6">
-            <StorageImage
-              path={prompt.image_path}
-              alt={prompt.title}
-              className="w-full rounded-xl border border-border/60 object-cover"
-            />
-            <div className="flex flex-wrap items-center gap-3 text-sm">
-              <span className="rounded-full bg-secondary px-3 py-1 text-secondary-foreground">
-                {prompt.category}
-              </span>
-              <span className="flex items-center gap-1 text-muted-foreground">
-                <Eye className="size-4" /> {prompt.views_count} views
-              </span>
-              {prompt.tags.map((t) => (
-                <span key={t} className="text-primary">
-                  #{t}
+          <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]">
+            <article className="min-w-0 space-y-6">
+              <StorageImage
+                path={prompt.image_path}
+                alt={prompt.title}
+                className="w-full rounded-xl border border-border/60 object-cover"
+              />
+              <div className="flex flex-wrap items-center gap-3 text-sm">
+                <span className="rounded-full bg-secondary px-3 py-1 text-secondary-foreground">
+                  {prompt.category}
                 </span>
-              ))}
-            </div>
-            <h1 className="font-display text-3xl font-bold">{prompt.title}</h1>
+                <span className="flex items-center gap-1 text-muted-foreground">
+                  <Eye className="size-4" /> {prompt.views_count} views
+                </span>
+                {prompt.tags.map((t) => (
+                  <span key={t} className="text-primary">
+                    #{t}
+                  </span>
+                ))}
+              </div>
+              <h1 className="font-display text-3xl font-bold">{prompt.title}</h1>
 
-            <div className="rounded-xl border border-border/60 bg-card p-5">
-              <div className="mb-3 flex items-center justify-between">
-                <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  Master prompt
-                </span>
+              <div className="rounded-xl border border-border/60 bg-card p-5">
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Master prompt
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void navigator.clipboard.writeText(prompt.prompt_text);
+                      toast.success("Prompt copied");
+                    }}
+                    className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                  >
+                    <Copy className="size-3.5" /> Copy prompt
+                  </button>
+                </div>
+                <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">
+                  {prompt.prompt_text}
+                </pre>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
-                  onClick={() => {
-                    void navigator.clipboard.writeText(prompt.prompt_text);
-                    toast.success("Prompt copied");
-                  }}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                  onClick={() => like.mutate()}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm",
+                    liked && "border-primary/60 text-primary",
+                  )}
                 >
-                  <Copy className="size-3.5" /> Copy prompt
+                  <Heart className={cn("size-4", liked && "fill-current")} /> {prompt.likes_count}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => toggleSavedPrompt(prompt.id)}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm",
+                    saved.includes(prompt.id) && "border-primary/60 text-primary",
+                  )}
+                >
+                  <Bookmark className={cn("size-4", saved.includes(prompt.id) && "fill-current")} />
+                  {saved.includes(prompt.id) ? "Saved" : "Save"}
                 </button>
               </div>
-              <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">
-                {prompt.prompt_text}
-              </pre>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => like.mutate()}
-                className={cn(
-                  "inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm",
-                  liked && "border-primary/60 text-primary",
-                )}
-              >
-                <Heart className={cn("size-4", liked && "fill-current")} /> {prompt.likes_count}
-              </button>
-              <button
-                type="button"
-                onClick={() => toggleSavedPrompt(prompt.id)}
-                className={cn(
-                  "inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm",
-                  saved.includes(prompt.id) && "border-primary/60 text-primary",
-                )}
-              >
-                <Bookmark className={cn("size-4", saved.includes(prompt.id) && "fill-current")} />
-                {saved.includes(prompt.id) ? "Saved" : "Save"}
-              </button>
-            </div>
+            </article>
 
             {links.length > 0 && (
-              <section>
-                <h2 className="font-display text-lg font-semibold">Competitor pages & channels</h2>
-                <ul className="mt-3 space-y-2">
-                  {links.map((l) => (
-                    <li key={l.id}>
-                      <a
-                        href={l.url}
-                        target="_blank"
-                        rel="noopener noreferrer nofollow"
-                        className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
-                      >
-                        <ExternalLink className="size-4" />
-                        {l.label || l.url}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </section>
+              <aside className="lg:sticky lg:top-24 lg:self-start">
+                <div className="rounded-xl border border-border/60 bg-card p-4">
+                  <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    Competitor pages & channels
+                  </h2>
+                  <ul className="mt-3 space-y-2">
+                    {links.map((l) => (
+                      <li key={l.id}>
+                        <a
+                          href={l.url}
+                          target="_blank"
+                          rel="noopener noreferrer nofollow"
+                          className="inline-flex items-start gap-2 text-sm text-primary hover:underline"
+                        >
+                          <ExternalLink className="mt-0.5 size-4 shrink-0" />
+                          <span className="break-all">{l.label || l.url}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </aside>
             )}
-          </article>
+          </div>
         )}
       </main>
       <SiteFooter />
