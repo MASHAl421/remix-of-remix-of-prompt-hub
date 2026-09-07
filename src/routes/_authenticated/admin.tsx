@@ -44,8 +44,11 @@ function AdminPage() {
   if (!isAdmin) {
     return (
       <Shell>
-        You&apos;re signed in, but this account isn&apos;t a reviewer yet. Ask an existing reviewer to
-        add you.
+        <p>
+          You&apos;re signed in, but this account isn&apos;t a reviewer yet. Ask an existing reviewer
+          to add you.
+        </p>
+        <ClaimFirstAdmin />
       </Shell>
     );
   }
@@ -139,6 +142,30 @@ function Shell({ children }: { children: React.ReactNode }) {
       </main>
       <SiteFooter />
     </div>
+  );
+}
+
+function ClaimFirstAdmin() {
+  const [busy, setBusy] = useState(false);
+  return (
+    <button
+      type="button"
+      disabled={busy}
+      onClick={async () => {
+        setBusy(true);
+        const { data, error } = await supabase.rpc("claim_first_admin");
+        setBusy(false);
+        if (error || !data) {
+          toast.error("Reviewer access is already set up — ask a reviewer to add you.");
+          return;
+        }
+        toast.success("You're the first reviewer");
+        window.location.reload();
+      }}
+      className="mt-6 rounded-md border border-border px-4 py-2 text-sm hover:border-primary/60"
+    >
+      {busy ? "Checking…" : "Claim reviewer access (first user only)"}
+    </button>
   );
 }
 
