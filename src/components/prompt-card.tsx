@@ -78,10 +78,10 @@ export function PromptCard({
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                    className="inline-flex max-w-full items-center gap-1 text-xs text-primary hover:underline"
                   >
                     <ExternalLink className="size-3" />
-                    {l.label || l.url}
+                    <span className="truncate">{l.label || l.url}</span>
                   </a>
                 </li>
               ))}
@@ -95,7 +95,7 @@ export function PromptCard({
               void navigator.clipboard.writeText(prompt.prompt_text);
               toast.success("Prompt copied");
             }}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-transform hover:scale-105"
+            className="inline-flex min-h-9 items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-medium text-primary-foreground transition-transform active:scale-95 hover:scale-105"
           >
             <Copy className="size-3.5" /> Copy
           </button>
@@ -104,7 +104,7 @@ export function PromptCard({
             aria-pressed={like.liked}
             onClick={() => void like.toggle()}
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-lg border border-glass-border px-3 py-1.5 text-xs backdrop-blur transition-colors hover:border-primary/60",
+              "inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-glass-border px-3.5 py-2 text-xs backdrop-blur transition-colors hover:border-primary/60",
               like.liked && "border-primary/60 text-primary",
             )}
           >
@@ -119,7 +119,7 @@ export function PromptCard({
             aria-label={saved ? "Remove from saved" : "Save prompt"}
             onClick={() => toggleSavedPrompt(prompt.id)}
             className={cn(
-              "ml-auto rounded-lg border border-glass-border p-1.5 backdrop-blur transition-colors hover:border-primary/60",
+              "ml-auto grid size-9 place-items-center rounded-lg border border-glass-border backdrop-blur transition-colors hover:border-primary/60",
               saved && "border-primary/60 text-primary",
             )}
           >
