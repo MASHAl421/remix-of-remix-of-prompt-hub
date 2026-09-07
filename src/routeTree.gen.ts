@@ -10,15 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ImagesRouteImport } from './routes/images'
 import { Route as LinksRouteImport } from './routes/links'
 import { Route as SubmitRouteImport } from './routes/submit'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as PromptsPromptIdRouteImport } from './routes/prompts.$promptId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -41,6 +47,11 @@ const SubmitRoute = SubmitRouteImport.update({
   path: '/submit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const PromptsPromptIdRoute = PromptsPromptIdRouteImport.update({
   id: '/prompts/$promptId',
   path: '/prompts/$promptId',
@@ -53,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/images': typeof ImagesRoute
   '/links': typeof LinksRoute
   '/submit': typeof SubmitRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/prompts/$promptId': typeof PromptsPromptIdRoute
 }
 export interface FileRoutesByTo {
@@ -61,35 +73,54 @@ export interface FileRoutesByTo {
   '/images': typeof ImagesRoute
   '/links': typeof LinksRoute
   '/submit': typeof SubmitRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/prompts/$promptId': typeof PromptsPromptIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/images': typeof ImagesRoute
   '/links': typeof LinksRoute
   '/submit': typeof SubmitRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/prompts/$promptId': typeof PromptsPromptIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/images' | '/links' | '/submit' | '/prompts/$promptId'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/images' | '/links' | '/submit' | '/prompts/$promptId'
-  id:
-    | '__root__'
     | '/'
     | '/auth'
     | '/images'
     | '/links'
     | '/submit'
+    | '/admin'
+    | '/prompts/$promptId'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/auth'
+    | '/images'
+    | '/links'
+    | '/submit'
+    | '/admin'
+    | '/prompts/$promptId'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/images'
+    | '/links'
+    | '/submit'
+    | '/_authenticated/admin'
     | '/prompts/$promptId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ImagesRoute: typeof ImagesRoute
   LinksRoute: typeof LinksRoute
@@ -104,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -134,6 +172,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SubmitRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/prompts/$promptId': {
       id: '/prompts/$promptId'
       path: '/prompts/$promptId'
@@ -144,8 +189,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ImagesRoute: ImagesRoute,
   LinksRoute: LinksRoute,
