@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ImagesRouteImport } from './routes/images'
 import { Route as LinksRouteImport } from './routes/links'
 import { Route as SubmitRouteImport } from './routes/submit'
@@ -18,6 +19,11 @@ import { Route as PromptsPromptIdRouteImport } from './routes/prompts.$promptId'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImagesRoute = ImagesRouteImport.update({
@@ -43,6 +49,7 @@ const PromptsPromptIdRoute = PromptsPromptIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/images': typeof ImagesRoute
   '/links': typeof LinksRoute
   '/submit': typeof SubmitRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/images': typeof ImagesRoute
   '/links': typeof LinksRoute
   '/submit': typeof SubmitRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/images': typeof ImagesRoute
   '/links': typeof LinksRoute
   '/submit': typeof SubmitRoute
@@ -65,14 +74,23 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/images' | '/links' | '/submit' | '/prompts/$promptId'
+  fullPaths:
+    '/' | '/auth' | '/images' | '/links' | '/submit' | '/prompts/$promptId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/images' | '/links' | '/submit' | '/prompts/$promptId'
-  id: '__root__' | '/' | '/images' | '/links' | '/submit' | '/prompts/$promptId'
+  to: '/' | '/auth' | '/images' | '/links' | '/submit' | '/prompts/$promptId'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/images'
+    | '/links'
+    | '/submit'
+    | '/prompts/$promptId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   ImagesRoute: typeof ImagesRoute
   LinksRoute: typeof LinksRoute
   SubmitRoute: typeof SubmitRoute
@@ -86,6 +104,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/images': {
@@ -121,6 +146,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   ImagesRoute: ImagesRoute,
   LinksRoute: LinksRoute,
   SubmitRoute: SubmitRoute,
