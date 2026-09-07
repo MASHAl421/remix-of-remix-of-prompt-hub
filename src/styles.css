@@ -115,3 +115,168 @@
     color: var(--color-foreground);
   }
 }
+
+/* ── Cinematic layer ─────────────────────────────────────────────
+   Ambient wildlife background + glass surfaces. Motion is decorative
+   only and disabled under prefers-reduced-motion. */
+
+@theme inline {
+  --color-glass-border: var(--glass-border);
+}
+
+:root {
+  --glass-border: oklch(0.98 0.01 90 / 0.14);
+  --glass-surface: oklch(0.28 0.02 70 / 0.42);
+  --glass-surface-strong: oklch(0.24 0.02 70 / 0.66);
+  --shadow-cinema: 0 24px 60px -28px oklch(0 0 0 / 0.85);
+  --shadow-glow: 0 0 40px -12px oklch(0.82 0.17 88 / 0.45);
+}
+
+@utility glass {
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: var(--shadow-cinema);
+}
+
+@utility glass-strong {
+  background: var(--glass-surface-strong);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(24px) saturate(150%);
+  box-shadow: var(--shadow-cinema);
+}
+
+@utility glow-ring {
+  &:hover {
+    border-color: color-mix(in oklab, var(--primary) 55%, transparent);
+    box-shadow: var(--shadow-glow);
+  }
+}
+
+@utility text-cinema {
+  background: linear-gradient(
+    100deg,
+    var(--foreground) 10%,
+    color-mix(in oklab, var(--primary) 85%, white) 55%,
+    var(--foreground) 92%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: cinema-sheen 9s ease-in-out infinite;
+}
+
+@keyframes cinema-sheen {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes swim-right {
+  0% {
+    transform: translate3d(-15vw, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(50vw, -3vh, 0) rotate(-4deg);
+  }
+  100% {
+    transform: translate3d(118vw, 1vh, 0) rotate(2deg);
+  }
+}
+
+@keyframes swim-left {
+  0% {
+    transform: translate3d(115vw, 0, 0) scaleX(-1) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(45vw, 4vh, 0) scaleX(-1) rotate(4deg);
+  }
+  100% {
+    transform: translate3d(-18vw, -2vh, 0) scaleX(-1) rotate(-2deg);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(-6px);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
+
+@keyframes aurora-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(6%, -8%, 0) scale(1.18);
+    opacity: 0.85;
+  }
+}
+
+@keyframes bubble-rise {
+  0% {
+    transform: translateY(12vh) scale(0.7);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-104vh) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes heart-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.45);
+  }
+  70% {
+    transform: scale(0.92);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@utility animate-rise-in {
+  animation: rise-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility animate-heart-pop {
+  animation: heart-pop 0.45s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
