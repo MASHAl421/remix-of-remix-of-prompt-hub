@@ -5,7 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { SiteFooter, SiteHeader } from "@/components/site-header";
 import { PromptCard } from "@/components/prompt-card";
-import { myLikesQuery, promptsQuery } from "@/lib/api";
+import { allPromptLinksQuery, myLikesQuery, promptsQuery } from "@/lib/api";
 import { CATEGORIES } from "@/lib/constants";
 import { getSavedPrompts } from "@/lib/visitor";
 import { cn } from "@/lib/utils";
