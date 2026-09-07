@@ -1,9 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { Bookmark, Copy, Eye, ExternalLink, Heart } from "lucide-react";
 import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Prompt, PromptLink } from "@/lib/api";
-import { toggleLike } from "@/lib/api";
+import { useLikeToggle } from "@/lib/use-like";
 import { StorageImage } from "@/components/storage-image";
 import { toggleSavedPrompt } from "@/lib/visitor";
 import { cn } from "@/lib/utils";
@@ -13,34 +12,40 @@ export function PromptCard({
   liked,
   saved,
   links = [],
+  index = 0,
 }: {
   prompt: Prompt;
   liked: boolean;
   saved: boolean;
   links?: PromptLink[];
+  index?: number;
 }) {
-  const qc = useQueryClient();
-  const like = useMutation({
-    mutationFn: () => toggleLike("prompt", prompt.id, liked),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: ["my-likes"] });
-      void qc.invalidateQueries({ queryKey: ["prompts"] });
-    },
-    onError: () => toast.error("Could not update your like"),
+  const like = useLikeToggle({
+    itemType: "prompt",
+    itemId: prompt.id,
+    serverLiked: liked,
+    serverCount: prompt.likes_count,
+    invalidateKeys: [["my-likes"], ["prompts"]],
   });
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-colors hover:border-primary/50">
-      <Link to="/prompts/$promptId" params={{ promptId: prompt.id }} className="block">
-        <StorageImage
-          path={prompt.image_path}
-          alt={prompt.title}
-          className="aspect-[4/3] w-full object-cover"
-        />
+    <article
+      className="group glass animate-rise-in glow-ring flex flex-col overflow-hidden rounded-2xl transition-all duration-500 hover:-translate-y-1"
+      style={{ animationDelay: `${Math.min(index, 12) * 55}ms` }}
+    >
+      <Link to="/prompts/$promptId" params={{ promptId: prompt.id }} className="block overflow-hidden">
+        <div className="relative">
+          <StorageImage
+            path={prompt.image_path}
+            alt={prompt.title}
+            className="aspect-[4/3] w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-background/10 to-transparent" />
+        </div>
       </Link>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex items-center gap-2 text-xs">
-          <span className="rounded-full bg-secondary px-2.5 py-1 text-secondary-foreground">
+          <span className="rounded-full border border-glass-border bg-secondary/60 px-2.5 py-1 text-secondary-foreground backdrop-blur">
             {prompt.category}
           </span>
           <span className="ml-auto flex items-center gap-1 text-muted-foreground">
@@ -48,7 +53,9 @@ export function PromptCard({
           </span>
         </div>
         <Link to="/prompts/$promptId" params={{ promptId: prompt.id }}>
-          <h3 className="font-display text-base font-semibold leading-snug">{prompt.title}</h3>
+          <h3 className="font-display text-base font-semibold leading-snug transition-colors group-hover:text-primary">
+            {prompt.title}
+          </h3>
         </Link>
         <p className="line-clamp-3 text-sm text-muted-foreground">{prompt.prompt_text}</p>
         {prompt.tags.length > 0 && (
@@ -61,7 +68,7 @@ export function PromptCard({
           </div>
         )}
         {links.length > 0 && (
-          <div className="flex flex-col gap-1.5 border-t border-border/40 pt-2">
+          <div className="flex flex-col gap-1.5 border-t border-glass-border pt-2">
             <p className="text-xs font-medium text-muted-foreground">Competitor links</p>
             <ul className="space-y-1">
               {links.slice(0, 3).map((l) => (
@@ -88,26 +95,31 @@ export function PromptCard({
               void navigator.clipboard.writeText(prompt.prompt_text);
               toast.success("Prompt copied");
             }}
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-transform hover:scale-105"
           >
             <Copy className="size-3.5" /> Copy
           </button>
           <button
             type="button"
-            onClick={() => like.mutate()}
+            aria-pressed={like.liked}
+            onClick={() => void like.toggle()}
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs transition-colors hover:border-primary/60",
-              liked && "border-primary/60 text-primary",
+              "inline-flex items-center gap-1.5 rounded-lg border border-glass-border px-3 py-1.5 text-xs backdrop-blur transition-colors hover:border-primary/60",
+              like.liked && "border-primary/60 text-primary",
             )}
           >
-            <Heart className={cn("size-3.5", liked && "fill-current")} /> {prompt.likes_count}
+            <Heart
+              key={like.popKey}
+              className={cn("size-3.5", like.liked && "animate-heart-pop fill-current")}
+            />{" "}
+            {like.count}
           </button>
           <button
             type="button"
             aria-label={saved ? "Remove from saved" : "Save prompt"}
             onClick={() => toggleSavedPrompt(prompt.id)}
             className={cn(
-              "ml-auto rounded-md border border-border p-1.5 transition-colors hover:border-primary/60",
+              "ml-auto rounded-lg border border-glass-border p-1.5 backdrop-blur transition-colors hover:border-primary/60",
               saved && "border-primary/60 text-primary",
             )}
           >
