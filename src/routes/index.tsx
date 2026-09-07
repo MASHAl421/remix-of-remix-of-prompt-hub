@@ -32,6 +32,17 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { data: prompts = [], isLoading } = useQuery(promptsQuery());
   const { data: likes = [] } = useQuery(myLikesQuery());
+  const { data: allLinks = [] } = useQuery(allPromptLinksQuery());
+
+  const linksByPrompt = useMemo(() => {
+    const map = new Map<string, typeof allLinks>();
+    for (const l of allLinks) {
+      const arr = map.get(l.prompt_id) ?? [];
+      arr.push(l);
+      map.set(l.prompt_id, arr);
+    }
+    return map;
+  }, [allLinks]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string>("All");
   const [tag, setTag] = useState<string>("");
