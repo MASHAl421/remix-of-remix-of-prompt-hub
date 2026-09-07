@@ -91,7 +91,7 @@ function AdminPage() {
               )}
             >
               {label}
-              {key !== "admins" && counts[key] > 0 && (
+              {key !== "admins" && (counts[key] ?? 0) > 0 && (
                 <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground">
                   {counts[key]}
                 </span>
@@ -172,7 +172,7 @@ function useModeration(table: "prompts" | "links" | "images", queryKey: string) 
       }: {
         id: string;
         status: Status;
-        note?: string | null;
+        note: string | null;
       }) => {
         const { error } = await supabase
           .from(table)
@@ -208,7 +208,7 @@ function ModerationActions({
 }: {
   id: string;
   status: Status;
-  onStatus: (status: Status, note?: string | null) => void;
+  onStatus: (status: Status, note: string | null) => void;
   onDelete: () => void;
 }) {
   return (
