@@ -9,12 +9,12 @@ import { lovable } from "@/integrations/lovable/index";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Admin sign in — Prompt Vault" },
+      { title: "Admin sign in — Prompt Aura" },
       {
         name: "description",
         content: "Sign in to review and publish submissions to the master prompt library.",
       },
-      { property: "og:title", content: "Admin sign in — Prompt Vault" },
+      { property: "og:title", content: "Admin sign in — Prompt Aura" },
       { property: "og:description", content: "Sign in to review submissions to the library." },
     ],
   }),

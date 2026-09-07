@@ -16,13 +16,13 @@ import {
 export const Route = createFileRoute("/submit")({
   head: () => ({
     meta: [
-      { title: "Submit a master prompt — Prompt Vault" },
+      { title: "Submit a master prompt — Prompt Aura" },
       {
         name: "description",
         content:
           "Share a master prompt with its reference image, niche category, tags and optional competitor links. Every submission is reviewed before publishing.",
       },
-      { property: "og:title", content: "Submit a master prompt — Prompt Vault" },
+      { property: "og:title", content: "Submit a master prompt — Prompt Aura" },
       {
         property: "og:description",
         content: "Share a master prompt with an image, category, tags and competitor links.",

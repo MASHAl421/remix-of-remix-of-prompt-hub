@@ -11,13 +11,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/links")({
   head: () => ({
     meta: [
-      { title: "Important links — Prompt Vault" },
+      { title: "Important links — Prompt Aura" },
       {
         name: "description",
         content:
           "A curated, reviewed collection of tools, tutorials, channels and communities worth bookmarking.",
       },
-      { property: "og:title", content: "Important links — Prompt Vault" },
+      { property: "og:title", content: "Important links — Prompt Aura" },
       {
         property: "og:description",
         content: "Curated tools, tutorials, channels and communities worth bookmarking.",

@@ -12,13 +12,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/images")({
   head: () => ({
     meta: [
-      { title: "Image gallery — Prompt Vault" },
+      { title: "Image gallery — Prompt Aura" },
       {
         name: "description",
         content:
           "A reviewed gallery of reference images shared by the community, grouped by content niche.",
       },
-      { property: "og:title", content: "Image gallery — Prompt Vault" },
+      { property: "og:title", content: "Image gallery — Prompt Aura" },
       {
         property: "og:description",
         content: "Reference images shared by the community, grouped by niche.",
