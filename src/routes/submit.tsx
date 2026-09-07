@@ -64,7 +64,7 @@ async function uploadImage(file: File) {
 }
 
 const inputClass =
-  "w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:border-primary";
+  "w-full rounded-md border border-glass-border bg-background/40 backdrop-blur px-3 py-2 text-sm outline-none focus:border-primary";
 
 function SubmitPage() {
   const [tab, setTab] = useState<"prompt" | "link" | "image">("prompt");

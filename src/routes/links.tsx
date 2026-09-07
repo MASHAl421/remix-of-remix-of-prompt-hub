@@ -69,12 +69,12 @@ function LinksPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search links…"
-            className="min-w-56 flex-1 rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:border-primary"
+            className="min-w-56 flex-1 rounded-md border border-glass-border bg-background/40 backdrop-blur px-3 py-2 text-sm outline-none focus:border-primary"
           />
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="rounded-md border border-input bg-card px-3 py-2 text-sm"
+            className="rounded-md border border-glass-border bg-background/40 backdrop-blur px-3 py-2 text-sm"
           >
             <option value="All">All types</option>
             {LINK_TYPES.map((t) => (
@@ -96,7 +96,7 @@ function LinksPage() {
               return (
                 <li
                   key={l.id}
-                  className="flex items-start gap-4 rounded-xl border border-border/60 bg-card p-4"
+                  className="flex items-start gap-4 glass rounded-2xl p-4"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
