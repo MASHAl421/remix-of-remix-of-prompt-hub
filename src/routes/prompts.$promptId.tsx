@@ -148,7 +148,7 @@ function PromptDetail() {
             </article>
 
             {links.length > 0 && (
-              <aside className="lg:sticky lg:top-24 lg:self-start">
+              <aside className="md:sticky md:top-24 md:self-start">
                 <div className="rounded-xl border border-border/60 bg-card p-4">
                   <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                     Competitor pages & channels
