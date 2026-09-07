@@ -188,6 +188,7 @@ function Home() {
                   prompt={p}
                   liked={likedIds.has(p.id)}
                   saved={saved.includes(p.id)}
+                  links={linksByPrompt.get(p.id) ?? []}
                 />
               ))}
             </div>
