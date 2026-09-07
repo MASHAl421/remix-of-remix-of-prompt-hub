@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SubmitRouteImport } from './routes/submit'
 import { Route as PromptsPromptIdRouteImport } from './routes/prompts.$promptId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubmitRoute = SubmitRouteImport.update({
+  id: '/submit',
+  path: '/submit',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PromptsPromptIdRoute = PromptsPromptIdRouteImport.update({
@@ -25,27 +31,31 @@ const PromptsPromptIdRoute = PromptsPromptIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/submit': typeof SubmitRoute
   '/prompts/$promptId': typeof PromptsPromptIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/submit': typeof SubmitRoute
   '/prompts/$promptId': typeof PromptsPromptIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/submit': typeof SubmitRoute
   '/prompts/$promptId': typeof PromptsPromptIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/prompts/$promptId'
+  fullPaths: '/' | '/submit' | '/prompts/$promptId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/prompts/$promptId'
-  id: '__root__' | '/' | '/prompts/$promptId'
+  to: '/' | '/submit' | '/prompts/$promptId'
+  id: '__root__' | '/' | '/submit' | '/prompts/$promptId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SubmitRoute: typeof SubmitRoute
   PromptsPromptIdRoute: typeof PromptsPromptIdRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/submit': {
+      id: '/submit'
+      path: '/submit'
+      fullPath: '/submit'
+      preLoaderRoute: typeof SubmitRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prompts/$promptId': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SubmitRoute: SubmitRoute,
   PromptsPromptIdRoute: PromptsPromptIdRoute,
 }
 export const routeTree = rootRouteImport
