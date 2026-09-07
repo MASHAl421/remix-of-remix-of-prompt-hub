@@ -79,7 +79,7 @@ function PromptDetail() {
             This prompt isn't available. It may still be waiting for review.
           </p>
         ) : (
-          <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]">
+          <div className="mt-6 grid gap-6 md:grid-cols-[1fr_300px]">
             <article className="min-w-0 space-y-6">
               <StorageImage
                 path={prompt.image_path}
