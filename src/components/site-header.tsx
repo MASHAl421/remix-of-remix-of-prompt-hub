@@ -13,10 +13,10 @@ export function SiteHeader() {
   const { user, isAdmin } = useSession();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-glass-border bg-background/60 backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
         <Link to="/" className="flex items-center gap-2">
-          <span className="grid size-8 place-items-center rounded-md bg-primary text-primary-foreground">
+          <span className="grid size-8 place-items-center rounded-lg bg-gradient-to-br from-primary to-chart-2 text-primary-foreground shadow-[0_0_24px_-6px_oklch(0.82_0.17_88/0.6)]">
             <Sparkles className="size-4" />
           </span>
           <span className="font-display text-lg font-semibold tracking-tight">Prompt Vault</span>
@@ -53,7 +53,7 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="mt-20 border-t border-border/60 py-8 text-center text-sm text-muted-foreground">
+    <footer className="mt-20 border-t border-glass-border bg-background/40 py-8 text-center text-sm text-muted-foreground backdrop-blur-xl">
       Prompt Vault — a community library of master prompts. Every submission is reviewed before it
       appears.
     </footer>

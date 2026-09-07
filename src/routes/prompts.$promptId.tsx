@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Bookmark, Copy, ExternalLink, Eye, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { SiteFooter, SiteHeader } from "@/components/site-header";
 import { StorageImage } from "@/components/storage-image";
-import { myLikesQuery, promptLinksQuery, promptQuery, toggleLike } from "@/lib/api";
+import { myLikesQuery, promptLinksQuery, promptQuery } from "@/lib/api";
+import { useLikeToggle } from "@/lib/use-like";
 import { getSavedPrompts, toggleSavedPrompt } from "@/lib/visitor";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
@@ -30,7 +31,6 @@ export const Route = createFileRoute("/prompts/$promptId")({
 
 function PromptDetail() {
   const { promptId } = Route.useParams();
-  const qc = useQueryClient();
   const { data: prompt, isLoading } = useQuery(promptQuery(promptId));
   const { data: links = [] } = useQuery(promptLinksQuery(promptId));
   const { data: likes = [] } = useQuery(myLikesQuery());
@@ -52,13 +52,12 @@ function PromptDetail() {
     [likes, promptId],
   );
 
-  const like = useMutation({
-    mutationFn: () => toggleLike("prompt", promptId, liked),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: ["my-likes"] });
-      void qc.invalidateQueries({ queryKey: ["prompt", promptId] });
-    },
-    onError: () => toast.error("Could not update your like"),
+  const like = useLikeToggle({
+    itemType: "prompt",
+    itemId: promptId,
+    serverLiked: liked,
+    serverCount: prompt?.likes_count ?? 0,
+    invalidateKeys: [["my-likes"], ["prompt", promptId], ["prompts"]],
   });
 
   return (
@@ -84,10 +83,10 @@ function PromptDetail() {
               <StorageImage
                 path={prompt.image_path}
                 alt={prompt.title}
-                className="w-full rounded-xl border border-border/60 object-cover"
+                className="w-full rounded-2xl border border-glass-border object-cover shadow-[var(--shadow-cinema)]"
               />
               <div className="flex flex-wrap items-center gap-3 text-sm">
-                <span className="rounded-full bg-secondary px-3 py-1 text-secondary-foreground">
+                <span className="rounded-full border border-glass-border bg-secondary/60 px-3 py-1 text-secondary-foreground backdrop-blur">
                   {prompt.category}
                 </span>
                 <span className="flex items-center gap-1 text-muted-foreground">
@@ -99,9 +98,9 @@ function PromptDetail() {
                   </span>
                 ))}
               </div>
-              <h1 className="font-display text-3xl font-bold">{prompt.title}</h1>
+              <h1 className="text-cinema font-display text-3xl font-bold">{prompt.title}</h1>
 
-              <div className="rounded-xl border border-border/60 bg-card p-5">
+              <div className="glass-strong animate-rise-in rounded-2xl p-5">
                 <div className="mb-3 flex items-center justify-between">
                   <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     Master prompt
@@ -125,19 +124,24 @@ function PromptDetail() {
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
-                  onClick={() => like.mutate()}
+                  aria-pressed={like.liked}
+                  onClick={() => void like.toggle()}
                   className={cn(
-                    "inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm",
-                    liked && "border-primary/60 text-primary",
+                    "inline-flex items-center gap-2 rounded-lg border border-glass-border px-4 py-2 text-sm backdrop-blur transition-colors hover:border-primary/60",
+                    like.liked && "border-primary/60 text-primary",
                   )}
                 >
-                  <Heart className={cn("size-4", liked && "fill-current")} /> {prompt.likes_count}
+                  <Heart
+                    key={like.popKey}
+                    className={cn("size-4", like.liked && "animate-heart-pop fill-current")}
+                  />{" "}
+                  {like.count}
                 </button>
                 <button
                   type="button"
                   onClick={() => toggleSavedPrompt(prompt.id)}
                   className={cn(
-                    "inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm",
+                    "inline-flex items-center gap-2 rounded-lg border border-glass-border px-4 py-2 text-sm backdrop-blur transition-colors hover:border-primary/60",
                     saved.includes(prompt.id) && "border-primary/60 text-primary",
                   )}
                 >
@@ -149,7 +153,7 @@ function PromptDetail() {
 
             {links.length > 0 && (
               <aside className="md:sticky md:top-24 md:self-start">
-                <div className="rounded-xl border border-border/60 bg-card p-4">
+                <div className="glass rounded-2xl p-4">
                   <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                     Competitor pages & channels
                   </h2>

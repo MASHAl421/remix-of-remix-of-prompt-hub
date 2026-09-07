@@ -64,7 +64,7 @@ function ImagesPage() {
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="rounded-md border border-input bg-card px-3 py-2 text-sm"
+            className="rounded-md border border-glass-border bg-background/40 backdrop-blur px-3 py-2 text-sm"
           >
             <option value="All">All categories</option>
             {CATEGORIES.map((c) => (
@@ -86,7 +86,7 @@ function ImagesPage() {
               return (
                 <figure
                   key={img.id}
-                  className="overflow-hidden rounded-xl border border-border/60 bg-card"
+                  className="overflow-hidden glass rounded-2xl"
                 >
                   <StorageImage
                     path={img.image_path}
