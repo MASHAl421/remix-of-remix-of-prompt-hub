@@ -77,7 +77,7 @@ function SubmitPage() {
         <p className="mt-2 text-muted-foreground">
           No account needed. Everything you send lands in a review queue first.
         </p>
-        <div className="mt-6 flex gap-2">
+        <div className="scroll-row mt-6">
           {(
             [
               ["prompt", "Master prompt"],
@@ -91,8 +91,8 @@ function SubmitPage() {
               onClick={() => setTab(key)}
               className={
                 tab === key
-                  ? "rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-                  : "rounded-md border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
+                  ? "rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"
+                  : "rounded-md border border-border px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground"
               }
             >
               {label}
