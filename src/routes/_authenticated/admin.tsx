@@ -15,12 +15,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Review queue — Prompt Vault admin" },
+      { title: "Review queue — Prompt Aura admin" },
       {
         name: "description",
         content: "Approve, reject and manage prompts, links and images submitted to the library.",
       },
-      { property: "og:title", content: "Review queue — Prompt Vault admin" },
+      { property: "og:title", content: "Review queue — Prompt Aura admin" },
       { property: "og:description", content: "Approve, reject and manage community submissions." },
     ],
   }),

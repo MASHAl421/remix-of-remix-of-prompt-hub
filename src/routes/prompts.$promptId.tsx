@@ -14,12 +14,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/prompts/$promptId")({
   head: () => ({
     meta: [
-      { title: "Master prompt — Prompt Vault" },
+      { title: "Master prompt — Prompt Aura" },
       {
         name: "description",
         content: "Read the full master prompt, copy it, and see the competitor pages behind it.",
       },
-      { property: "og:title", content: "Master prompt — Prompt Vault" },
+      { property: "og:title", content: "Master prompt — Prompt Aura" },
       {
         property: "og:description",
         content: "Read the full master prompt, copy it, and see the competitor pages behind it.",

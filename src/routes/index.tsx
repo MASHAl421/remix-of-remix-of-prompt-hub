@@ -13,13 +13,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Prompt Vault — Master Prompts by Niche" },
+      { title: "Prompt Aura — Master Prompts by Niche" },
       {
         name: "description",
         content:
           "Browse a reviewed collection of master prompts across pets, finance, horror, motivation and more — each with a reference image and competitor links.",
       },
-      { property: "og:title", content: "Prompt Vault — Master Prompts by Niche" },
+      { property: "og:title", content: "Prompt Aura — Master Prompts by Niche" },
       {
         property: "og:description",
         content: "A reviewed collection of master prompts with reference images and competitor links.",

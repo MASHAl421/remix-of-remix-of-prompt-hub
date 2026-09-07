@@ -19,7 +19,7 @@ export function SiteHeader() {
           <span className="grid size-8 place-items-center rounded-lg bg-gradient-to-br from-primary to-chart-2 text-primary-foreground shadow-[0_0_24px_-6px_oklch(0.82_0.17_88/0.6)]">
             <Sparkles className="size-4" />
           </span>
-          <span className="font-display text-lg font-semibold tracking-tight">Prompt Vault</span>
+          <span className="font-display text-lg font-semibold tracking-tight">Prompt Aura</span>
         </Link>
         <nav className="flex flex-1 flex-wrap items-center gap-1 text-sm">
           {nav.map((item) => (
@@ -54,7 +54,7 @@ export function SiteHeader() {
 export function SiteFooter() {
   return (
     <footer className="mt-20 border-t border-glass-border bg-background/40 py-8 text-center text-sm text-muted-foreground backdrop-blur-xl">
-      Prompt Vault — a community library of master prompts. Every submission is reviewed before it
+      Prompt Aura — a community library of master prompts. Every submission is reviewed before it
       appears.
     </footer>
   );

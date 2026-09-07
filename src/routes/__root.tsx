@@ -81,13 +81,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Prompt Vault — Master Prompt Library" },
+      { title: "Prompt Aura — Master Prompt Library" },
       {
         name: "description",
         content:
           "A reviewed library of master prompts by niche, with reference images, competitor links and a curated links collection.",
       },
-      { property: "og:title", content: "Prompt Vault — Master Prompt Library" },
+      { property: "og:title", content: "Prompt Aura — Master Prompt Library" },
       {
         property: "og:description",
         content: "Browse and submit master prompts by niche, with images and competitor links.",
