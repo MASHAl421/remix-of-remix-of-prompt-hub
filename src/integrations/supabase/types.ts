@@ -14,16 +14,223 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      images: {
+        Row: {
+          caption: string
+          category: string
+          created_at: string
+          id: string
+          image_path: string
+          likes_count: number
+          rejection_note: string | null
+          status: Database["public"]["Enums"]["item_status"]
+          updated_at: string
+        }
+        Insert: {
+          caption: string
+          category: string
+          created_at?: string
+          id?: string
+          image_path: string
+          likes_count?: number
+          rejection_note?: string | null
+          status?: Database["public"]["Enums"]["item_status"]
+          updated_at?: string
+        }
+        Update: {
+          caption?: string
+          category?: string
+          created_at?: string
+          id?: string
+          image_path?: string
+          likes_count?: number
+          rejection_note?: string | null
+          status?: Database["public"]["Enums"]["item_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      likes: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          item_type: string
+          visitor_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          item_type: string
+          visitor_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          item_type?: string
+          visitor_id?: string
+        }
+        Relationships: []
+      }
+      links: {
+        Row: {
+          created_at: string
+          id: string
+          likes_count: number
+          link_type: string
+          note: string | null
+          rejection_note: string | null
+          status: Database["public"]["Enums"]["item_status"]
+          title: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          likes_count?: number
+          link_type: string
+          note?: string | null
+          rejection_note?: string | null
+          status?: Database["public"]["Enums"]["item_status"]
+          title: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          likes_count?: number
+          link_type?: string
+          note?: string | null
+          rejection_note?: string | null
+          status?: Database["public"]["Enums"]["item_status"]
+          title?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      prompt_links: {
+        Row: {
+          created_at: string
+          id: string
+          label: string | null
+          prompt_id: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          prompt_id: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          prompt_id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_links_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prompts: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          image_path: string
+          likes_count: number
+          prompt_text: string
+          rejection_note: string | null
+          status: Database["public"]["Enums"]["item_status"]
+          tags: string[]
+          title: string
+          updated_at: string
+          views_count: number
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          image_path: string
+          likes_count?: number
+          prompt_text: string
+          rejection_note?: string | null
+          status?: Database["public"]["Enums"]["item_status"]
+          tags?: string[]
+          title: string
+          updated_at?: string
+          views_count?: number
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          image_path?: string
+          likes_count?: number
+          prompt_text?: string
+          rejection_note?: string | null
+          status?: Database["public"]["Enums"]["item_status"]
+          tags?: string[]
+          title?: string
+          updated_at?: string
+          views_count?: number
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      increment_prompt_views: {
+        Args: { _prompt_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin"
+      item_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +357,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin"],
+      item_status: ["pending", "approved", "rejected"],
+    },
   },
 } as const
