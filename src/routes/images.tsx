@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Heart } from "lucide-react";
+import { Heart, X } from "lucide-react";
 import { toast } from "sonner";
 import { SiteFooter, SiteHeader } from "@/components/site-header";
 import { StorageImage } from "@/components/storage-image";
@@ -49,6 +49,7 @@ function ImagesPage() {
   });
 
   const visible = images.filter((i) => category === "All" || i.category === category);
+  const [preview, setPreview] = useState<{ path: string; caption: string } | null>(null);
 
   return (
     <div className="min-h-screen font-sans">
@@ -88,11 +89,18 @@ function ImagesPage() {
                   key={img.id}
                   className="overflow-hidden glass rounded-2xl"
                 >
-                  <StorageImage
-                    path={img.image_path}
-                    alt={img.caption}
-                    className="aspect-4/3 w-full object-cover"
-                  />
+                  <button
+                    type="button"
+                    onClick={() => setPreview({ path: img.image_path, caption: img.caption })}
+                    className="block w-full cursor-zoom-in"
+                    aria-label={`Open ${img.caption}`}
+                  >
+                    <StorageImage
+                      path={img.image_path}
+                      alt={img.caption}
+                      className="aspect-4/3 w-full object-cover transition-transform duration-500 hover:scale-105"
+                    />
+                  </button>
                   <figcaption className="flex items-start justify-between gap-3 p-4">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{img.caption}</p>
@@ -115,6 +123,32 @@ function ImagesPage() {
           </div>
         )}
       </main>
+      {preview && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={preview.caption}
+          onClick={() => setPreview(null)}
+          className="fixed inset-0 z-100 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+        >
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={() => setPreview(null)}
+            className="absolute right-4 top-4 rounded-full border border-white/30 p-2 text-white"
+          >
+            <X className="size-5" />
+          </button>
+          <figure onClick={(e) => e.stopPropagation()} className="max-h-full max-w-5xl">
+            <StorageImage
+              path={preview.path}
+              alt={preview.caption}
+              className="max-h-[80vh] w-auto max-w-full rounded-xl object-contain"
+            />
+            <figcaption className="mt-3 text-center text-sm text-white/80">{preview.caption}</figcaption>
+          </figure>
+        </div>
+      )}
       <SiteFooter />
     </div>
   );

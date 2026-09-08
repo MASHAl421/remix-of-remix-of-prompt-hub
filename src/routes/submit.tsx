@@ -34,7 +34,7 @@ export const Route = createFileRoute("/submit")({
 
 const promptSchema = z.object({
   title: z.string().trim().min(3).max(160),
-  prompt_text: z.string().trim().min(10).max(12000),
+  prompt_text: z.string().trim().min(10),
   category: z.string().trim().min(2),
 });
 
@@ -183,7 +183,7 @@ function PromptForm() {
         <input name="title" required maxLength={160} className={inputClass} />
       </Field>
       <Field label="Master prompt">
-        <textarea name="prompt_text" required rows={8} maxLength={12000} className={inputClass} />
+        <textarea name="prompt_text" required rows={12} className={inputClass} />
       </Field>
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Category">
