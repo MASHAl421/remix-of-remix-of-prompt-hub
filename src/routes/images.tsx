@@ -49,6 +49,7 @@ function ImagesPage() {
   });
 
   const visible = images.filter((i) => category === "All" || i.category === category);
+  const [preview, setPreview] = useState<{ path: string; caption: string } | null>(null);
 
   return (
     <div className="min-h-screen font-sans">
