@@ -89,11 +89,18 @@ function ImagesPage() {
                   key={img.id}
                   className="overflow-hidden glass rounded-2xl"
                 >
-                  <StorageImage
-                    path={img.image_path}
-                    alt={img.caption}
-                    className="aspect-4/3 w-full object-cover"
-                  />
+                  <button
+                    type="button"
+                    onClick={() => setPreview({ path: img.image_path, caption: img.caption })}
+                    className="block w-full cursor-zoom-in"
+                    aria-label={`Open ${img.caption}`}
+                  >
+                    <StorageImage
+                      path={img.image_path}
+                      alt={img.caption}
+                      className="aspect-4/3 w-full object-cover transition-transform duration-500 hover:scale-105"
+                    />
+                  </button>
                   <figcaption className="flex items-start justify-between gap-3 p-4">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{img.caption}</p>
