@@ -123,6 +123,32 @@ function ImagesPage() {
           </div>
         )}
       </main>
+      {preview && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={preview.caption}
+          onClick={() => setPreview(null)}
+          className="fixed inset-0 z-100 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+        >
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={() => setPreview(null)}
+            className="absolute right-4 top-4 rounded-full border border-white/30 p-2 text-white"
+          >
+            <X className="size-5" />
+          </button>
+          <figure onClick={(e) => e.stopPropagation()} className="max-h-full max-w-5xl">
+            <StorageImage
+              path={preview.path}
+              alt={preview.caption}
+              className="max-h-[80vh] w-auto max-w-full rounded-xl object-contain"
+            />
+            <figcaption className="mt-3 text-center text-sm text-white/80">{preview.caption}</figcaption>
+          </figure>
+        </div>
+      )}
       <SiteFooter />
     </div>
   );
