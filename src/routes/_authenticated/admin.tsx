@@ -363,13 +363,27 @@ function PromptQueue({ status }: { status: Status }) {
               {p.rejection_note && (
                 <p className="mt-2 text-sm text-destructive">Note: {p.rejection_note}</p>
               )}
-              <div className="mt-4">
+              <div className="mt-4 flex flex-wrap items-center gap-2">
                 <ModerationActions
                   id={p.id}
                   status={p.status}
                   onStatus={(s, note) => setStatus.mutate({ id: p.id, status: s, note })}
                   onDelete={() => remove.mutate(p.id)}
                 />
+                <button
+                  type="button"
+                  disabled={premium.isPending}
+                  onClick={() => premium.mutate({ id: p.id, value: !p.is_premium })}
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm",
+                    p.is_premium
+                      ? "border-primary/60 bg-primary/10 text-primary"
+                      : "border-border text-muted-foreground",
+                  )}
+                >
+                  <Crown className="size-4" />
+                  {p.is_premium ? "Make public" : "Make premium"}
+                </button>
               </div>
             </div>
           </div>
