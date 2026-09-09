@@ -49,68 +49,80 @@ export type ImageItem = {
   created_at: string;
 };
 
-export const promptsQuery = (status: Status = "approved") =>
+export const promptsQuery = (status: Status = "approved", admin = false) =>
   queryOptions({
-    queryKey: ["prompts", status],
+    queryKey: ["prompts", status, admin],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("prompts")
-        .select("*")
-        .eq("status", status)
-        .order("created_at", { ascending: false });
+      const { data, error } = admin
+        ? await supabase
+            .from("prompts")
+            .select("*")
+            .eq("status", status)
+            .order("created_at", { ascending: false })
+        : await supabase
+            .from("public_prompts")
+            .select("*")
+            .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data ?? []) as Prompt[];
+      return (data ?? []) as unknown as Prompt[];
     },
   });
 
-export const promptQuery = (id: string) =>
+export const promptQuery = (id: string, admin = false) =>
   queryOptions({
-    queryKey: ["prompt", id],
+    queryKey: ["prompt", id, admin],
     queryFn: async () => {
-      const { data, error } = await supabase.from("prompts").select("*").eq("id", id).maybeSingle();
+      const { data, error } = await supabase
+        .from(admin ? "prompts" : "public_prompts")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
       if (error) throw error;
-      return (data ?? null) as Prompt | null;
+      return (data ?? null) as unknown as Prompt | null;
     },
   });
 
-export const promptLinksQuery = (id: string) =>
+export const promptLinksQuery = (id: string, admin = false) =>
   queryOptions({
-    queryKey: ["prompt-links", id],
+    queryKey: ["prompt-links", id, admin],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("prompt_links")
+        .from(admin ? "prompt_links" : "public_prompt_links")
         .select("*")
-        .eq("prompt_id", id)
-        .order("created_at");
+        .eq("prompt_id", id);
       if (error) throw error;
-      return (data ?? []) as PromptLink[];
+      return (data ?? []) as unknown as PromptLink[];
     },
   });
 
-export const allPromptLinksQuery = () =>
+export const allPromptLinksQuery = (admin = false) =>
   queryOptions({
-    queryKey: ["prompt-links"],
+    queryKey: ["prompt-links", admin],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("prompt_links")
-        .select("*")
-        .order("created_at");
+        .from(admin ? "prompt_links" : "public_prompt_links")
+        .select("*");
       if (error) throw error;
-      return (data ?? []) as PromptLink[];
+      return (data ?? []) as unknown as PromptLink[];
     },
   });
 
-export const linksQuery = (status: Status = "approved") =>
+export const linksQuery = (status: Status = "approved", admin = false) =>
   queryOptions({
-    queryKey: ["links", status],
+    queryKey: ["links", status, admin],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("links")
-        .select("*")
-        .eq("status", status)
-        .order("created_at", { ascending: false });
+      const { data, error } = admin
+        ? await supabase
+            .from("links")
+            .select("*")
+            .eq("status", status)
+            .order("created_at", { ascending: false })
+        : await supabase
+            .from("public_links")
+            .select("*")
+            .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data ?? []) as LinkItem[];
+      return (data ?? []) as unknown as LinkItem[];
     },
   });
 
