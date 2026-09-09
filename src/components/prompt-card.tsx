@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Bookmark, Copy, Eye, ExternalLink, Heart } from "lucide-react";
+import { Bookmark, Copy, Crown, Eye, ExternalLink, Heart, Lock } from "lucide-react";
 import { toast } from "sonner";
 import type { Prompt, PromptLink } from "@/lib/api";
 import { useLikeToggle } from "@/lib/use-like";
