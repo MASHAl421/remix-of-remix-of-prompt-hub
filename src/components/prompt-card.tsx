@@ -84,16 +84,23 @@ export function PromptCard({
             <ul className="space-y-1">
               {links.slice(0, 3).map((l) => (
                 <li key={l.id}>
-                  <a
-                    href={l.url}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                    onClick={(e) => e.stopPropagation()}
-                    className="inline-flex max-w-full items-center gap-1 text-xs text-primary hover:underline"
-                  >
-                    <ExternalLink className="size-3" />
-                    <span className="truncate">{l.label || l.url}</span>
-                  </a>
+                  {l.url ? (
+                    <a
+                      href={l.url}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex max-w-full items-center gap-1 text-xs text-primary hover:underline"
+                    >
+                      <ExternalLink className="size-3" />
+                      <span className="truncate">{l.label || l.url}</span>
+                    </a>
+                  ) : (
+                    <span className="inline-flex max-w-full items-center gap-1 text-xs text-muted-foreground">
+                      <Lock className="size-3" />
+                      <span className="truncate">{l.label || "Locked link"}</span>
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -103,12 +110,22 @@ export function PromptCard({
           <button
             type="button"
             onClick={() => {
+              if (prompt.is_premium) {
+                toast.error("Premium prompt — only reviewers can copy this one");
+                return;
+              }
               void navigator.clipboard.writeText(prompt.prompt_text);
               toast.success("Prompt copied");
             }}
-            className="inline-flex min-h-9 items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-medium text-primary-foreground transition-transform active:scale-95 hover:scale-105"
+            className={cn(
+              "inline-flex min-h-9 items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-medium transition-transform active:scale-95 hover:scale-105",
+              prompt.is_premium
+                ? "border border-glass-border text-muted-foreground"
+                : "bg-primary text-primary-foreground",
+            )}
           >
-            <Copy className="size-3.5" /> Copy
+            {prompt.is_premium ? <Lock className="size-3.5" /> : <Copy className="size-3.5" />}
+            {prompt.is_premium ? "Locked" : "Copy"}
           </button>
           <button
             type="button"
