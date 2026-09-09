@@ -280,9 +280,22 @@ function Empty({ label }: { label: string }) {
 }
 
 function PromptQueue({ status }: { status: Status }) {
+  const qc = useQueryClient();
   const { data = [], isLoading } = useQuery(promptsQuery(status));
   const { data: allLinks = [] } = useQuery(allPromptLinksQuery());
   const { setStatus, remove } = useModeration("prompts", "prompts");
+
+  const premium = useMutation({
+    mutationFn: async ({ id, value }: { id: string; value: boolean }) => {
+      const { error } = await supabase.from("prompts").update({ is_premium: value }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: (_d, v) => {
+      void qc.invalidateQueries({ queryKey: ["prompts"] });
+      toast.success(v.value ? "Marked premium — reviewers only" : "Now visible to everyone");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const linksByPrompt = new Map<string, typeof allLinks>();
   for (const l of allLinks) {
