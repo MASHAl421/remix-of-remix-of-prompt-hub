@@ -15,6 +15,7 @@ export type Prompt = {
   rejection_note: string | null;
   likes_count: number;
   views_count: number;
+  is_premium: boolean;
   created_at: string;
 };
 

@@ -151,6 +151,7 @@ export type Database = {
           created_at: string
           id: string
           image_path: string
+          is_premium: boolean
           likes_count: number
           prompt_text: string
           rejection_note: string | null
@@ -165,6 +166,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_path: string
+          is_premium?: boolean
           likes_count?: number
           prompt_text: string
           rejection_note?: string | null
@@ -179,6 +181,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_path?: string
+          is_premium?: boolean
           likes_count?: number
           prompt_text?: string
           rejection_note?: string | null

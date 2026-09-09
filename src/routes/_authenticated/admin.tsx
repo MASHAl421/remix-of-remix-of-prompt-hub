@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Check, ExternalLink, Trash2, X } from "lucide-react";
+import { Check, Crown, ExternalLink, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { SiteFooter, SiteHeader } from "@/components/site-header";
 import { StorageImage } from "@/components/storage-image";
@@ -280,9 +280,22 @@ function Empty({ label }: { label: string }) {
 }
 
 function PromptQueue({ status }: { status: Status }) {
+  const qc = useQueryClient();
   const { data = [], isLoading } = useQuery(promptsQuery(status));
   const { data: allLinks = [] } = useQuery(allPromptLinksQuery());
   const { setStatus, remove } = useModeration("prompts", "prompts");
+
+  const premium = useMutation({
+    mutationFn: async ({ id, value }: { id: string; value: boolean }) => {
+      const { error } = await supabase.from("prompts").update({ is_premium: value }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: (_d, v) => {
+      void qc.invalidateQueries({ queryKey: ["prompts"] });
+      toast.success(v.value ? "Marked premium — reviewers only" : "Now visible to everyone");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const linksByPrompt = new Map<string, typeof allLinks>();
   for (const l of allLinks) {
@@ -305,7 +318,14 @@ function PromptQueue({ status }: { status: Status }) {
               className="h-32 w-full rounded-lg object-cover sm:w-48"
             />
             <div className="min-w-0 flex-1">
-              <h2 className="font-display text-lg font-semibold">{p.title}</h2>
+              <h2 className="font-display text-lg font-semibold">
+                {p.title}
+                {p.is_premium && (
+                  <span className="ml-2 inline-flex items-center gap-1 rounded-full border border-primary/60 px-2 py-0.5 align-middle text-xs text-primary">
+                    <Crown className="size-3" /> Premium
+                  </span>
+                )}
+              </h2>
               <p className="mt-1 text-xs text-muted-foreground">
                 {p.category} · {new Date(p.created_at).toLocaleDateString()}
                 {p.tags.length > 0 && ` · ${p.tags.map((t) => `#${t}`).join(" ")}`}
@@ -343,13 +363,27 @@ function PromptQueue({ status }: { status: Status }) {
               {p.rejection_note && (
                 <p className="mt-2 text-sm text-destructive">Note: {p.rejection_note}</p>
               )}
-              <div className="mt-4">
+              <div className="mt-4 flex flex-wrap items-center gap-2">
                 <ModerationActions
                   id={p.id}
                   status={p.status}
                   onStatus={(s, note) => setStatus.mutate({ id: p.id, status: s, note })}
                   onDelete={() => remove.mutate(p.id)}
                 />
+                <button
+                  type="button"
+                  disabled={premium.isPending}
+                  onClick={() => premium.mutate({ id: p.id, value: !p.is_premium })}
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm",
+                    p.is_premium
+                      ? "border-primary/60 bg-primary/10 text-primary"
+                      : "border-border text-muted-foreground",
+                  )}
+                >
+                  <Crown className="size-4" />
+                  {p.is_premium ? "Make public" : "Make premium"}
+                </button>
               </div>
             </div>
           </div>
