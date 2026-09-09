@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Bookmark, Copy, Eye, ExternalLink, Heart } from "lucide-react";
+import { Bookmark, Copy, Crown, Eye, ExternalLink, Heart, Lock } from "lucide-react";
 import { toast } from "sonner";
 import type { Prompt, PromptLink } from "@/lib/api";
 import { useLikeToggle } from "@/lib/use-like";
@@ -48,6 +48,11 @@ export function PromptCard({
           <span className="rounded-full border border-glass-border bg-secondary/60 px-2.5 py-1 text-secondary-foreground backdrop-blur">
             {prompt.category}
           </span>
+          {prompt.is_premium && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-primary/60 bg-primary/10 px-2.5 py-1 text-primary">
+              <Crown className="size-3" /> Premium
+            </span>
+          )}
           <span className="ml-auto flex items-center gap-1 text-muted-foreground">
             <Eye className="size-3.5" /> {prompt.views_count}
           </span>
@@ -57,7 +62,13 @@ export function PromptCard({
             {prompt.title}
           </h3>
         </Link>
-        <p className="line-clamp-3 text-sm text-muted-foreground">{prompt.prompt_text}</p>
+        {prompt.is_premium ? (
+          <p className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+            <Lock className="size-3.5" /> Premium prompt — locked
+          </p>
+        ) : (
+          <p className="line-clamp-3 text-sm text-muted-foreground">{prompt.prompt_text}</p>
+        )}
         {prompt.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {prompt.tags.slice(0, 4).map((tag) => (
@@ -73,16 +84,23 @@ export function PromptCard({
             <ul className="space-y-1">
               {links.slice(0, 3).map((l) => (
                 <li key={l.id}>
-                  <a
-                    href={l.url}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                    onClick={(e) => e.stopPropagation()}
-                    className="inline-flex max-w-full items-center gap-1 text-xs text-primary hover:underline"
-                  >
-                    <ExternalLink className="size-3" />
-                    <span className="truncate">{l.label || l.url}</span>
-                  </a>
+                  {l.url ? (
+                    <a
+                      href={l.url}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex max-w-full items-center gap-1 text-xs text-primary hover:underline"
+                    >
+                      <ExternalLink className="size-3" />
+                      <span className="truncate">{l.label || l.url}</span>
+                    </a>
+                  ) : (
+                    <span className="inline-flex max-w-full items-center gap-1 text-xs text-muted-foreground">
+                      <Lock className="size-3" />
+                      <span className="truncate">{l.label || "Locked link"}</span>
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -92,12 +110,22 @@ export function PromptCard({
           <button
             type="button"
             onClick={() => {
+              if (prompt.is_premium) {
+                toast.error("Premium prompt — only reviewers can copy this one");
+                return;
+              }
               void navigator.clipboard.writeText(prompt.prompt_text);
               toast.success("Prompt copied");
             }}
-            className="inline-flex min-h-9 items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-medium text-primary-foreground transition-transform active:scale-95 hover:scale-105"
+            className={cn(
+              "inline-flex min-h-9 items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-medium transition-transform active:scale-95 hover:scale-105",
+              prompt.is_premium
+                ? "border border-glass-border text-muted-foreground"
+                : "bg-primary text-primary-foreground",
+            )}
           >
-            <Copy className="size-3.5" /> Copy
+            {prompt.is_premium ? <Lock className="size-3.5" /> : <Copy className="size-3.5" />}
+            {prompt.is_premium ? "Locked" : "Copy"}
           </button>
           <button
             type="button"

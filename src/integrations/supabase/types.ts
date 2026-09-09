@@ -21,6 +21,7 @@ export type Database = {
           created_at: string
           id: string
           image_path: string
+          is_premium: boolean
           likes_count: number
           rejection_note: string | null
           status: Database["public"]["Enums"]["item_status"]
@@ -32,6 +33,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_path: string
+          is_premium?: boolean
           likes_count?: number
           rejection_note?: string | null
           status?: Database["public"]["Enums"]["item_status"]
@@ -43,6 +45,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_path?: string
+          is_premium?: boolean
           likes_count?: number
           rejection_note?: string | null
           status?: Database["public"]["Enums"]["item_status"]
@@ -78,6 +81,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_premium: boolean
           likes_count: number
           link_type: string
           note: string | null
@@ -90,6 +94,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_premium?: boolean
           likes_count?: number
           link_type: string
           note?: string | null
@@ -102,6 +107,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_premium?: boolean
           likes_count?: number
           link_type?: string
           note?: string | null
@@ -141,6 +147,13 @@ export type Database = {
             columns: ["prompt_id"]
             isOneToOne: false
             referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prompt_links_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "public_prompts"
             referencedColumns: ["id"]
           },
         ]
@@ -216,7 +229,115 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_links: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          is_premium: boolean | null
+          likes_count: number | null
+          link_type: string | null
+          note: string | null
+          rejection_note: string | null
+          status: Database["public"]["Enums"]["item_status"] | null
+          title: string | null
+          url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string | null
+          is_premium?: boolean | null
+          likes_count?: number | null
+          link_type?: string | null
+          note?: string | null
+          rejection_note?: never
+          status?: Database["public"]["Enums"]["item_status"] | null
+          title?: string | null
+          url?: never
+        }
+        Update: {
+          created_at?: string | null
+          id?: string | null
+          is_premium?: boolean | null
+          likes_count?: number | null
+          link_type?: string | null
+          note?: string | null
+          rejection_note?: never
+          status?: Database["public"]["Enums"]["item_status"] | null
+          title?: string | null
+          url?: never
+        }
+        Relationships: []
+      }
+      public_prompt_links: {
+        Row: {
+          id: string | null
+          is_premium: boolean | null
+          label: string | null
+          prompt_id: string | null
+          url: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_links_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prompt_links_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "public_prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      public_prompts: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          id: string | null
+          image_path: string | null
+          is_premium: boolean | null
+          likes_count: number | null
+          prompt_text: string | null
+          rejection_note: string | null
+          status: Database["public"]["Enums"]["item_status"] | null
+          tags: string[] | null
+          title: string | null
+          views_count: number | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          id?: string | null
+          image_path?: string | null
+          is_premium?: boolean | null
+          likes_count?: number | null
+          prompt_text?: never
+          rejection_note?: never
+          status?: Database["public"]["Enums"]["item_status"] | null
+          tags?: string[] | null
+          title?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          id?: string | null
+          image_path?: string | null
+          is_premium?: boolean | null
+          likes_count?: number | null
+          prompt_text?: never
+          rejection_note?: never
+          status?: Database["public"]["Enums"]["item_status"] | null
+          tags?: string[] | null
+          title?: string | null
+          views_count?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       claim_first_admin: { Args: never; Returns: boolean }
