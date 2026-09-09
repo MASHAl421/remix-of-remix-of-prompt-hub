@@ -36,6 +36,7 @@ export type LinkItem = {
   status: Status;
   rejection_note: string | null;
   likes_count: number;
+  is_premium: boolean;
   created_at: string;
 };
 
@@ -47,6 +48,7 @@ export type ImageItem = {
   status: Status;
   rejection_note: string | null;
   likes_count: number;
+  is_premium: boolean;
   created_at: string;
 };
 
