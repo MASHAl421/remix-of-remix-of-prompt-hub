@@ -48,6 +48,11 @@ export function PromptCard({
           <span className="rounded-full border border-glass-border bg-secondary/60 px-2.5 py-1 text-secondary-foreground backdrop-blur">
             {prompt.category}
           </span>
+          {prompt.is_premium && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-primary/60 bg-primary/10 px-2.5 py-1 text-primary">
+              <Crown className="size-3" /> Premium
+            </span>
+          )}
           <span className="ml-auto flex items-center gap-1 text-muted-foreground">
             <Eye className="size-3.5" /> {prompt.views_count}
           </span>
