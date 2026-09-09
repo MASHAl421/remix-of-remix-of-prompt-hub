@@ -62,7 +62,13 @@ export function PromptCard({
             {prompt.title}
           </h3>
         </Link>
-        <p className="line-clamp-3 text-sm text-muted-foreground">{prompt.prompt_text}</p>
+        {prompt.is_premium ? (
+          <p className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+            <Lock className="size-3.5" /> Premium prompt — locked
+          </p>
+        ) : (
+          <p className="line-clamp-3 text-sm text-muted-foreground">{prompt.prompt_text}</p>
+        )}
         {prompt.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {prompt.tags.slice(0, 4).map((tag) => (
