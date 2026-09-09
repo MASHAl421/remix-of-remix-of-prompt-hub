@@ -24,6 +24,7 @@ export type PromptLink = {
   prompt_id: string;
   label: string | null;
   url: string;
+  is_premium?: boolean;
 };
 
 export type LinkItem = {
