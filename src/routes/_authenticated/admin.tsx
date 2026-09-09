@@ -318,7 +318,14 @@ function PromptQueue({ status }: { status: Status }) {
               className="h-32 w-full rounded-lg object-cover sm:w-48"
             />
             <div className="min-w-0 flex-1">
-              <h2 className="font-display text-lg font-semibold">{p.title}</h2>
+              <h2 className="font-display text-lg font-semibold">
+                {p.title}
+                {p.is_premium && (
+                  <span className="ml-2 inline-flex items-center gap-1 rounded-full border border-primary/60 px-2 py-0.5 align-middle text-xs text-primary">
+                    <Crown className="size-3" /> Premium
+                  </span>
+                )}
+              </h2>
               <p className="mt-1 text-xs text-muted-foreground">
                 {p.category} · {new Date(p.created_at).toLocaleDateString()}
                 {p.tags.length > 0 && ` · ${p.tags.map((t) => `#${t}`).join(" ")}`}
