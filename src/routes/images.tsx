@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Heart, X } from "lucide-react";
+import { Crown, Heart, Lock, X } from "lucide-react";
 import { toast } from "sonner";
 import { SiteFooter, SiteHeader } from "@/components/site-header";
 import { StorageImage } from "@/components/storage-image";
 import { imagesQuery, myLikesQuery, toggleLike } from "@/lib/api";
+import { useSession } from "@/hooks/use-session";
 import { CATEGORIES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/images")({
 
 function ImagesPage() {
   const qc = useQueryClient();
+  const { isAdmin } = useSession();
   const { data: images = [], isLoading } = useQuery(imagesQuery());
   const { data: likes = [] } = useQuery(myLikesQuery());
   const [category, setCategory] = useState("All");
@@ -91,10 +93,21 @@ function ImagesPage() {
                 >
                   <button
                     type="button"
-                    onClick={() => setPreview({ path: img.image_path, caption: img.caption })}
-                    className="block w-full cursor-zoom-in"
+                    onClick={() => {
+                      if (img.is_premium && !isAdmin) {
+                        toast.error("Premium image — only reviewers can open the full size");
+                        return;
+                      }
+                      setPreview({ path: img.image_path, caption: img.caption });
+                    }}
+                    className="relative block w-full cursor-zoom-in"
                     aria-label={`Open ${img.caption}`}
                   >
+                    {img.is_premium && (
+                      <span className="absolute left-3 top-3 z-10 inline-flex items-center gap-1 rounded-full border border-primary/60 bg-background/70 px-2 py-0.5 text-xs text-primary backdrop-blur">
+                        <Crown className="size-3" /> Premium
+                      </span>
+                    )}
                     <StorageImage
                       path={img.image_path}
                       alt={img.caption}
@@ -103,7 +116,10 @@ function ImagesPage() {
                   </button>
                   <figcaption className="flex items-start justify-between gap-3 p-4">
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">{img.caption}</p>
+                      <p className="flex items-center gap-1.5 truncate text-sm font-medium">
+                        {img.is_premium && !isAdmin && <Lock className="size-3.5 shrink-0" />}
+                        {img.caption}
+                      </p>
                       <p className="mt-1 text-xs text-muted-foreground">{img.category}</p>
                     </div>
                     <button
