@@ -75,11 +75,9 @@ export const promptQuery = (id: string, admin = false) =>
   queryOptions({
     queryKey: ["prompt", id, admin],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from(admin ? "prompts" : "public_prompts")
-        .select("*")
-        .eq("id", id)
-        .maybeSingle();
+      const { data, error } = admin
+        ? await supabase.from("prompts").select("*").eq("id", id).maybeSingle()
+        : await supabase.from("public_prompts").select("*").eq("id", id).maybeSingle();
       if (error) throw error;
       return (data ?? null) as unknown as Prompt | null;
     },
@@ -89,10 +87,9 @@ export const promptLinksQuery = (id: string, admin = false) =>
   queryOptions({
     queryKey: ["prompt-links", id, admin],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from(admin ? "prompt_links" : "public_prompt_links")
-        .select("*")
-        .eq("prompt_id", id);
+      const { data, error } = admin
+        ? await supabase.from("prompt_links").select("*").eq("prompt_id", id)
+        : await supabase.from("public_prompt_links").select("*").eq("prompt_id", id);
       if (error) throw error;
       return (data ?? []) as unknown as PromptLink[];
     },
@@ -102,9 +99,9 @@ export const allPromptLinksQuery = (admin = false) =>
   queryOptions({
     queryKey: ["prompt-links", admin],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from(admin ? "prompt_links" : "public_prompt_links")
-        .select("*");
+      const { data, error } = admin
+        ? await supabase.from("prompt_links").select("*")
+        : await supabase.from("public_prompt_links").select("*");
       if (error) throw error;
       return (data ?? []) as unknown as PromptLink[];
     },
