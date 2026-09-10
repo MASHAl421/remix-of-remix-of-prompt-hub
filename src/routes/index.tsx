@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import { SiteFooter, SiteHeader } from "@/components/site-header";
 import { PromptCard } from "@/components/prompt-card";
 import { allPromptLinksQuery, myLikesQuery, promptsQuery } from "@/lib/api";
+import { useSession } from "@/hooks/use-session";
 import { CATEGORIES } from "@/lib/constants";
 import { getSavedPrompts } from "@/lib/visitor";
 import { cn } from "@/lib/utils";
@@ -30,9 +31,10 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const { data: prompts = [], isLoading } = useQuery(promptsQuery());
+  const { isAdmin } = useSession();
+  const { data: prompts = [], isLoading } = useQuery(promptsQuery("approved", isAdmin));
   const { data: likes = [] } = useQuery(myLikesQuery());
-  const { data: allLinks = [] } = useQuery(allPromptLinksQuery());
+  const { data: allLinks = [] } = useQuery(allPromptLinksQuery(isAdmin));
 
   const linksByPrompt = useMemo(() => {
     const map = new Map<string, typeof allLinks>();
@@ -210,6 +212,7 @@ function Home() {
                     liked={likedIds.has(p.id)}
                     saved={saved.includes(p.id)}
                     links={linksByPrompt.get(p.id) ?? []}
+                unlocked={isAdmin}
                   />
                 ))}
               </div>

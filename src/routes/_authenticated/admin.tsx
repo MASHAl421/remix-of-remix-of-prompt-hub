@@ -34,8 +34,8 @@ function AdminPage() {
   const [tab, setTab] = useState<Tab>("prompts");
   const [status, setStatus] = useState<Status>("pending");
 
-  const pendingPrompts = useQuery(promptsQuery("pending"));
-  const pendingLinks = useQuery(linksQuery("pending"));
+  const pendingPrompts = useQuery(promptsQuery("pending", true));
+  const pendingLinks = useQuery(linksQuery("pending", true));
   const pendingImages = useQuery(imagesQuery("pending"));
 
   if (loading) {
@@ -281,8 +281,8 @@ function Empty({ label }: { label: string }) {
 
 function PromptQueue({ status }: { status: Status }) {
   const qc = useQueryClient();
-  const { data = [], isLoading } = useQuery(promptsQuery(status));
-  const { data: allLinks = [] } = useQuery(allPromptLinksQuery());
+  const { data = [], isLoading } = useQuery(promptsQuery(status, true));
+  const { data: allLinks = [] } = useQuery(allPromptLinksQuery(true));
   const { setStatus, remove } = useModeration("prompts", "prompts");
 
   const premium = useMutation({
@@ -394,7 +394,7 @@ function PromptQueue({ status }: { status: Status }) {
 }
 
 function LinkQueue({ status }: { status: Status }) {
-  const { data = [], isLoading } = useQuery(linksQuery(status));
+  const { data = [], isLoading } = useQuery(linksQuery(status, true));
   const { setStatus, remove } = useModeration("links", "links");
 
   if (isLoading) return <Empty label="loading" />;

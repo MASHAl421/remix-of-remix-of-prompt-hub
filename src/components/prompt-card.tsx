@@ -13,13 +13,16 @@ export function PromptCard({
   saved,
   links = [],
   index = 0,
+  unlocked = false,
 }: {
   prompt: Prompt;
   liked: boolean;
   saved: boolean;
   links?: PromptLink[];
   index?: number;
+  unlocked?: boolean;
 }) {
+  const locked = prompt.is_premium && !unlocked;
   const like = useLikeToggle({
     itemType: "prompt",
     itemId: prompt.id,
@@ -62,7 +65,7 @@ export function PromptCard({
             {prompt.title}
           </h3>
         </Link>
-        {prompt.is_premium ? (
+        {locked ? (
           <p className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
             <Lock className="size-3.5" /> Premium prompt — locked
           </p>
@@ -110,7 +113,7 @@ export function PromptCard({
           <button
             type="button"
             onClick={() => {
-              if (prompt.is_premium) {
+              if (locked) {
                 toast.error("Premium prompt — only reviewers can copy this one");
                 return;
               }
@@ -119,13 +122,13 @@ export function PromptCard({
             }}
             className={cn(
               "inline-flex min-h-9 items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-medium transition-transform active:scale-95 hover:scale-105",
-              prompt.is_premium
+              locked
                 ? "border border-glass-border text-muted-foreground"
                 : "bg-primary text-primary-foreground",
             )}
           >
-            {prompt.is_premium ? <Lock className="size-3.5" /> : <Copy className="size-3.5" />}
-            {prompt.is_premium ? "Locked" : "Copy"}
+            {locked ? <Lock className="size-3.5" /> : <Copy className="size-3.5" />}
+            {locked ? "Locked" : "Copy"}
           </button>
           <button
             type="button"
