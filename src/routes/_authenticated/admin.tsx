@@ -227,6 +227,45 @@ function useModeration(table: "prompts" | "links" | "images", queryKey: string) 
   };
 }
 
+function PremiumToggle({
+  table,
+  id,
+  value,
+  queryKey,
+}: {
+  table: "prompts" | "links" | "images";
+  id: string;
+  value: boolean;
+  queryKey: string;
+}) {
+  const qc = useQueryClient();
+  const premium = useMutation({
+    mutationFn: async (next: boolean) => {
+      const { error } = await supabase.from(table).update({ is_premium: next }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: (_d, next) => {
+      void qc.invalidateQueries({ queryKey: [queryKey] });
+      toast.success(next ? "Marked premium — reviewers only" : "Now open to everyone");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  return (
+    <button
+      type="button"
+      disabled={premium.isPending}
+      onClick={() => premium.mutate(!value)}
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm",
+        value ? "border-primary/60 bg-primary/10 text-primary" : "border-border text-muted-foreground",
+      )}
+    >
+      <Crown className="size-4" />
+      {value ? "Make public" : "Make premium"}
+    </button>
+  );
+}
+
 function ModerationActions({
   id,
   status,
@@ -404,7 +443,14 @@ function LinkQueue({ status }: { status: Status }) {
     <div className="space-y-4">
       {data.map((l) => (
         <article key={l.id} className="rounded-xl border border-border/60 bg-card p-5">
-          <h2 className="font-display text-lg font-semibold">{l.title}</h2>
+          <h2 className="font-display text-lg font-semibold">
+            {l.title}
+            {l.is_premium && (
+              <span className="ml-2 inline-flex items-center gap-1 rounded-full border border-primary/60 px-2 py-0.5 align-middle text-xs text-primary">
+                <Crown className="size-3" /> Premium
+              </span>
+            )}
+          </h2>
           <a
             href={l.url}
             target="_blank"
@@ -418,13 +464,14 @@ function LinkQueue({ status }: { status: Status }) {
           {l.rejection_note && (
             <p className="mt-2 text-sm text-destructive">Note: {l.rejection_note}</p>
           )}
-          <div className="mt-4">
+          <div className="mt-4 flex flex-wrap items-center gap-2">
             <ModerationActions
               id={l.id}
               status={l.status}
               onStatus={(s, note) => setStatus.mutate({ id: l.id, status: s, note })}
               onDelete={() => remove.mutate(l.id)}
             />
+            <PremiumToggle table="links" id={l.id} value={l.is_premium} queryKey="links" />
           </div>
         </article>
       ))}
@@ -452,6 +499,7 @@ function ImageQueue({ status }: { status: Status }) {
             {img.rejection_note && (
               <p className="text-sm text-destructive">Note: {img.rejection_note}</p>
             )}
+            <PremiumToggle table="images" id={img.id} value={img.is_premium} queryKey="images" />
             <ModerationActions
               id={img.id}
               status={img.status}
