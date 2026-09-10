@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Bookmark, Copy, ExternalLink, Eye, Heart } from "lucide-react";
+import { ArrowLeft, Bookmark, Copy, ExternalLink, Eye, Heart, Crown, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { SiteFooter, SiteHeader } from "@/components/site-header";
 import { StorageImage } from "@/components/storage-image";
 import { myLikesQuery, promptLinksQuery, promptQuery } from "@/lib/api";
 import { useLikeToggle } from "@/lib/use-like";
+import { useSession } from "@/hooks/use-session";
 import { getSavedPrompts, toggleSavedPrompt } from "@/lib/visitor";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
@@ -31,8 +32,9 @@ export const Route = createFileRoute("/prompts/$promptId")({
 
 function PromptDetail() {
   const { promptId } = Route.useParams();
-  const { data: prompt, isLoading } = useQuery(promptQuery(promptId));
-  const { data: links = [] } = useQuery(promptLinksQuery(promptId));
+  const { isAdmin } = useSession();
+  const { data: prompt, isLoading } = useQuery(promptQuery(promptId, isAdmin));
+  const { data: links = [] } = useQuery(promptLinksQuery(promptId, isAdmin));
   const { data: likes = [] } = useQuery(myLikesQuery());
   const [saved, setSaved] = useState<string[]>([]);
 
@@ -98,6 +100,11 @@ function PromptDetail() {
                   </span>
                 ))}
               </div>
+              {prompt.is_premium && (
+                <span className="inline-flex items-center gap-1 rounded-full border border-primary/60 bg-primary/10 px-3 py-1 text-xs text-primary">
+                  <Crown className="size-3.5" /> Premium
+                </span>
+              )}
               <h1 className="text-cinema font-display text-2xl font-bold leading-tight sm:text-3xl">{prompt.title}</h1>
 
               <div className="glass-strong animate-rise-in rounded-2xl p-4 sm:p-5">
@@ -108,17 +115,41 @@ function PromptDetail() {
                   <button
                     type="button"
                     onClick={() => {
+                      if (prompt.is_premium && !isAdmin) {
+                        toast.error("Premium prompt — only reviewers can copy this one");
+                        return;
+                      }
                       void navigator.clipboard.writeText(prompt.prompt_text);
                       toast.success("Prompt copied");
                     }}
-                    className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                    className={cn(
+                      "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-90",
+                      prompt.is_premium && !isAdmin
+                        ? "border border-glass-border text-muted-foreground"
+                        : "bg-primary text-primary-foreground",
+                    )}
                   >
-                    <Copy className="size-3.5" /> Copy prompt
+                    {prompt.is_premium && !isAdmin ? (
+                      <>
+                        <Lock className="size-3.5" /> Locked
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="size-3.5" /> Copy prompt
+                      </>
+                    )}
                   </button>
                 </div>
-                <pre className="max-h-[60vh] overflow-y-auto whitespace-pre-wrap break-words font-sans text-sm leading-relaxed sm:max-h-none">
-                  {prompt.prompt_text}
-                </pre>
+                {prompt.is_premium && !isAdmin ? (
+                  <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Lock className="size-4" /> This master prompt is premium — the full text is
+                    available to reviewers only.
+                  </p>
+                ) : (
+                  <pre className="max-h-[60vh] overflow-y-auto whitespace-pre-wrap break-words font-sans text-sm leading-relaxed sm:max-h-none">
+                    {prompt.prompt_text}
+                  </pre>
+                )}
               </div>
 
               <div className="flex flex-wrap gap-2">
@@ -160,15 +191,22 @@ function PromptDetail() {
                   <ul className="mt-3 space-y-2">
                     {links.map((l) => (
                       <li key={l.id}>
-                        <a
-                          href={l.url}
-                          target="_blank"
-                          rel="noopener noreferrer nofollow"
-                          className="inline-flex items-start gap-2 text-sm text-primary hover:underline"
-                        >
-                          <ExternalLink className="mt-0.5 size-4 shrink-0" />
-                          <span className="break-all">{l.label || l.url}</span>
-                        </a>
+                        {l.url ? (
+                          <a
+                            href={l.url}
+                            target="_blank"
+                            rel="noopener noreferrer nofollow"
+                            className="inline-flex items-start gap-2 text-sm text-primary hover:underline"
+                          >
+                            <ExternalLink className="mt-0.5 size-4 shrink-0" />
+                            <span className="break-all">{l.label || l.url}</span>
+                          </a>
+                        ) : (
+                          <span className="inline-flex items-start gap-2 text-sm text-muted-foreground">
+                            <Lock className="mt-0.5 size-4 shrink-0" />
+                            <span className="break-all">{l.label || "Locked link"}</span>
+                          </span>
+                        )}
                       </li>
                     ))}
                   </ul>

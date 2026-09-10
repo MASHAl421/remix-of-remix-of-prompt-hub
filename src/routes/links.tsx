@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ExternalLink, Heart } from "lucide-react";
+import { Crown, ExternalLink, Heart, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { SiteFooter, SiteHeader } from "@/components/site-header";
 import { linksQuery, myLikesQuery, toggleLike } from "@/lib/api";
+import { useSession } from "@/hooks/use-session";
 import { LINK_TYPES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -29,7 +30,8 @@ export const Route = createFileRoute("/links")({
 
 function LinksPage() {
   const qc = useQueryClient();
-  const { data: links = [], isLoading } = useQuery(linksQuery());
+  const { isAdmin } = useSession();
+  const { data: links = [], isLoading } = useQuery(linksQuery("approved", isAdmin));
   const { data: likes = [] } = useQuery(myLikesQuery());
   const [type, setType] = useState("All");
   const [search, setSearch] = useState("");
@@ -103,18 +105,32 @@ function LinksPage() {
                       <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs text-secondary-foreground">
                         {l.link_type}
                       </span>
-                      <a
-                        href={l.url}
-                        target="_blank"
-                        rel="noopener noreferrer nofollow"
-                        className="inline-flex items-center gap-1.5 font-medium hover:text-primary"
-                      >
-                        {l.title}
-                        <ExternalLink className="size-3.5" />
-                      </a>
+                      {l.url ? (
+                        <a
+                          href={l.url}
+                          target="_blank"
+                          rel="noopener noreferrer nofollow"
+                          className="inline-flex items-center gap-1.5 font-medium hover:text-primary"
+                        >
+                          {l.title}
+                          <ExternalLink className="size-3.5" />
+                        </a>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 font-medium text-muted-foreground">
+                          {l.title}
+                          <Lock className="size-3.5" />
+                        </span>
+                      )}
+                      {l.is_premium && (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-primary/60 bg-primary/10 px-2 py-0.5 text-xs text-primary">
+                          <Crown className="size-3" /> Premium
+                        </span>
+                      )}
                     </div>
                     {l.note && <p className="mt-1.5 text-sm text-muted-foreground">{l.note}</p>}
-                    <p className="mt-1 truncate text-xs text-muted-foreground/70">{l.url}</p>
+                    <p className="mt-1 truncate text-xs text-muted-foreground/70">
+                      {l.url || "Link hidden — reviewers only"}
+                    </p>
                   </div>
                   <button
                     type="button"

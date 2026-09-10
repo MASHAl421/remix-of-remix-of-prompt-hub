@@ -212,7 +212,7 @@ function Home() {
                     liked={likedIds.has(p.id)}
                     saved={saved.includes(p.id)}
                     links={linksByPrompt.get(p.id) ?? []}
-                unlocked={isAdmin}
+                    unlocked={isAdmin}
                   />
                 ))}
               </div>
