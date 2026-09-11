@@ -90,9 +90,10 @@ function Home() {
       <SiteHeader />
       <main className="mx-auto max-w-6xl px-4">
         <section className="animate-rise-in py-10 sm:py-16">
-          <p className="text-xs uppercase tracking-[0.28em] text-primary sm:text-sm">
+          <span className="inline-flex items-center gap-2 rounded-full border border-glass-border bg-background/40 px-3 py-1.5 text-[11px] uppercase tracking-[0.28em] text-primary backdrop-blur">
+            <span className="size-1.5 animate-pulse rounded-full bg-primary" />
             Master prompt library
-          </p>
+          </span>
           <h1 className="text-cinema mt-3 max-w-3xl font-display text-3xl font-bold leading-[1.1] sm:mt-4 sm:text-5xl lg:text-6xl">
             Every winning prompt, filed by niche.
           </h1>
@@ -114,9 +115,25 @@ function Home() {
               Browse links
             </Link>
           </div>
+          <dl className="mt-8 grid max-w-xl grid-cols-3 gap-3">
+            {[
+              { label: "Prompts live", value: prompts.length },
+              { label: "Niches", value: new Set(prompts.map((p) => p.category)).size },
+              { label: "Tags", value: allTags.length },
+            ].map((s) => (
+              <div key={s.label} className="glass rounded-xl px-3 py-3 text-center">
+                <dt className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                  {s.label}
+                </dt>
+                <dd className="font-display text-xl font-semibold text-primary sm:text-2xl">
+                  {s.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </section>
 
-        <section className="glass animate-rise-in space-y-3 rounded-2xl p-3 sm:space-y-4 sm:p-4">
+        <section className="glass-strong animate-rise-in sticky top-16 z-30 space-y-3 rounded-2xl p-3 sm:space-y-4 sm:p-4">
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <input
