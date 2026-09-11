@@ -43,7 +43,13 @@ export function PromptCard({
             alt={prompt.title}
             className="aspect-[4/3] w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-background/10 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-50" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,transparent_35%,oklch(1_0_0/0.10)_48%,transparent_62%)] bg-[length:250%_100%] bg-[position:120%_0] transition-[background-position] duration-[1100ms] ease-out group-hover:bg-[position:-20%_0]" />
+          {locked && (
+            <span className="pointer-events-none absolute right-3 top-3 inline-flex items-center gap-1 rounded-full border border-primary/50 bg-background/70 px-2.5 py-1 text-[11px] font-medium text-primary backdrop-blur-md">
+              <Lock className="size-3" /> Reviewer only
+            </span>
+          )}
         </div>
       </Link>
       <div className="flex flex-1 flex-col gap-3 p-4">
