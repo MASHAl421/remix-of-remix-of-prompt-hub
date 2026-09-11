@@ -90,9 +90,10 @@ function Home() {
       <SiteHeader />
       <main className="mx-auto max-w-6xl px-4">
         <section className="animate-rise-in py-10 sm:py-16">
-          <p className="text-xs uppercase tracking-[0.28em] text-primary sm:text-sm">
+          <span className="inline-flex items-center gap-2 rounded-full border border-glass-border bg-background/40 px-3 py-1.5 text-[11px] uppercase tracking-[0.28em] text-primary backdrop-blur">
+            <span className="size-1.5 animate-pulse rounded-full bg-primary" />
             Master prompt library
-          </p>
+          </span>
           <h1 className="text-cinema mt-3 max-w-3xl font-display text-3xl font-bold leading-[1.1] sm:mt-4 sm:text-5xl lg:text-6xl">
             Every winning prompt, filed by niche.
           </h1>
