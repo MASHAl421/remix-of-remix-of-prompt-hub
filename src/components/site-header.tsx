@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Home, ImageIcon, LinkIcon, PlusCircle, Shield, Sparkles } from "lucide-react";
 import { useSession } from "@/hooks/use-session";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const nav = [
   { to: "/", label: "Prompts", icon: Home },
@@ -40,6 +41,7 @@ export function SiteHeader() {
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
             <Link
               to="/submit"
               className="rounded-lg bg-gradient-to-r from-primary to-chart-2 px-3 py-1.5 text-xs font-medium text-primary-foreground md:hidden"
