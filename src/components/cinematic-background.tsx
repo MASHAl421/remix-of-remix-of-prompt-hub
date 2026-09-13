@@ -19,11 +19,9 @@ const BUBBLES = Array.from({ length: 16 }, (_, i) => ({
 function WildlifeVideo({
   src,
   className,
-  opacity,
 }: {
   src: string;
   className: string;
-  opacity: number;
 }) {
   return (
     <video
@@ -35,8 +33,7 @@ function WildlifeVideo({
       preload="auto"
       aria-hidden
       tabIndex={-1}
-      className={`pointer-events-none absolute h-full w-full object-cover mix-blend-screen motion-reduce:hidden ${className}`}
-      style={{ opacity }}
+      className={`wildlife-video pointer-events-none absolute h-full w-full object-cover motion-reduce:hidden ${className}`}
     />
   );
 }
@@ -45,7 +42,7 @@ export function CinematicBackground() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       {/* deep base wash */}
-      <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_-10%,oklch(0.28_0.05_215/0.55),transparent_60%),radial-gradient(100%_80%_at_80%_110%,oklch(0.32_0.06_170/0.45),transparent_65%)]" />
+      <div className="cinematic-wash absolute inset-0" />
 
       {/* slow aurora lights */}
       <div
@@ -62,11 +59,11 @@ export function CinematicBackground() {
       />
 
       {/* real filmed wildlife, keyed out of its black background */}
-      <WildlifeVideo src={wildlifeLoop.url} className="inset-0" opacity={0.55} />
-      <WildlifeVideo src={skyLoop.url} className="inset-0 hidden sm:block" opacity={0.4} />
+      <WildlifeVideo src={wildlifeLoop.url} className="inset-0 wildlife-video-primary" />
+      <WildlifeVideo src={skyLoop.url} className="inset-0 hidden sm:block wildlife-video-secondary" />
 
       {/* light shafts */}
-      <div className="absolute inset-0 bg-[repeating-linear-gradient(105deg,transparent_0_120px,oklch(1_0_0/0.022)_120px_190px)]" />
+      <div className="cinematic-shafts absolute inset-0" />
 
       {/* rising bubbles */}
       {BUBBLES.map((b, i) => (
@@ -84,7 +81,7 @@ export function CinematicBackground() {
       ))}
 
       {/* cinematic vignette keeps text crisp */}
-      <div className="absolute inset-0 bg-[radial-gradient(78%_62%_at_50%_40%,transparent,oklch(0.12_0.01_60/0.55))]" />
+      <div className="cinematic-vignette absolute inset-0" />
     </div>
   );
 }
