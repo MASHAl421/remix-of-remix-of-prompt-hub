@@ -40,7 +40,7 @@ function WildlifeVideo({
 
 export function CinematicBackground() {
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div aria-hidden className="cinematic-background pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       {/* deep base wash */}
       <div className="cinematic-wash absolute inset-0" />
 
