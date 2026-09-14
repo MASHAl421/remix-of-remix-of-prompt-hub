@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Home, ImageIcon, LinkIcon, PlusCircle, Shield, Sparkles } from "lucide-react";
 import { useSession } from "@/hooks/use-session";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 const nav = [
   { to: "/", label: "Prompts", icon: Home },
@@ -15,7 +14,7 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-glass-border bg-background dark:bg-background/70 dark:backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-glass-border bg-background/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
           <Link to="/" className="flex min-w-0 items-center gap-2">
             <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-primary to-chart-2 text-primary-foreground shadow-[0_0_24px_-6px_oklch(0.82_0.17_88/0.6)]">
@@ -41,7 +40,6 @@ export function SiteHeader() {
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
-            <ThemeToggle />
             <Link
               to="/submit"
               className="rounded-lg bg-gradient-to-r from-primary to-chart-2 px-3 py-1.5 text-xs font-medium text-primary-foreground md:hidden"
@@ -68,7 +66,7 @@ export function SiteHeader() {
       </header>
 
       {/* Mobile bottom tab bar — thumb-friendly navigation */}
-      <nav className="safe-bottom fixed inset-x-0 bottom-0 z-50 border-t border-glass-border bg-background dark:bg-background/85 dark:backdrop-blur-xl md:hidden">
+      <nav className="safe-bottom fixed inset-x-0 bottom-0 z-50 border-t border-glass-border bg-background/85 backdrop-blur-xl md:hidden">
         <div className="mx-auto flex max-w-lg items-stretch">
           {nav.map((item) => (
             <Link
@@ -90,7 +88,7 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="mt-16 border-t border-glass-border bg-background px-4 pb-28 pt-8 text-center text-sm text-muted-foreground dark:bg-background/40 dark:backdrop-blur-xl md:mt-20 md:pb-8">
+    <footer className="mt-16 border-t border-glass-border bg-background/40 px-4 pb-28 pt-8 text-center text-sm text-muted-foreground backdrop-blur-xl md:mt-20 md:pb-8">
       Prompt Aura — a community library of master prompts. Every submission is reviewed before it
       appears.
     </footer>
