@@ -1,10 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Plus, Trash2, Upload } from "lucide-react";
+import { Check, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 import { SiteFooter, SiteHeader } from "@/components/site-header";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { analyzeMasterPrompt, type PromptAnalysis } from "@/lib/prompt-analysis.functions";
 import {
   ALLOWED_IMAGE_TYPES,
   CATEGORIES,
@@ -111,10 +114,47 @@ function SubmitPage() {
 }
 
 function PromptForm() {
+  const formRef = useRef<HTMLFormElement>(null);
   const [busy, setBusy] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
   const [done, setDone] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [competitors, setCompetitors] = useState<{ label: string; url: string }[]>([]);
+  const [category, setCategory] = useState("");
+  const [tags, setTags] = useState("");
+  const [analysis, setAnalysis] = useState<PromptAnalysis | null>(null);
+  const analyzePrompt = useServerFn(analyzeMasterPrompt);
+
+  async function onAnalyze() {
+    const form = formRef.current;
+    if (!form) return;
+    const fd = new FormData(form);
+    const title = String(fd.get("title") ?? "").trim();
+    const promptText = String(fd.get("prompt_text") ?? "").trim();
+    if (title.length < 3 || promptText.length < 10) {
+      toast.error("Add a title and master prompt before using AI analysis");
+      return;
+    }
+
+    setAnalyzing(true);
+    try {
+      const result = await analyzePrompt({
+        data: {
+          title,
+          promptText,
+          competitorLinks: competitors.filter((item) => item.url.trim()),
+        },
+      });
+      setAnalysis(result);
+      setCategory(result.category);
+      setTags(result.tags.join(", "));
+      toast.success("AI suggestions added — review them before submitting");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "AI analysis is unavailable right now");
+    } finally {
+      setAnalyzing(false);
+    }
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -161,6 +201,9 @@ function PromptForm() {
       form.reset();
       setFile(null);
       setCompetitors([]);
+      setCategory("");
+      setTags("");
+      setAnalysis(null);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -178,16 +221,56 @@ function PromptForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
+    <form ref={formRef} onSubmit={onSubmit} className="space-y-5">
       <Field label="Title">
         <input name="title" required maxLength={160} className={inputClass} />
       </Field>
       <Field label="Master prompt">
         <textarea name="prompt_text" required rows={12} className={inputClass} />
       </Field>
+      <div className="flex flex-wrap items-center gap-3 rounded-md border border-glass-border bg-background/30 p-3 backdrop-blur">
+        <Button type="button" variant="outline" onClick={() => void onAnalyze()} disabled={analyzing}>
+          <Sparkles className="size-4" />
+          {analyzing ? "Analyzing…" : "Analyze with AI"}
+        </Button>
+        <p className="text-xs text-muted-foreground">
+          Suggests a niche and tags, then checks for missing details. You stay in control.
+        </p>
+      </div>
+      {analysis && (
+        <div className="glass space-y-3 rounded-md border border-primary/30 p-4" aria-live="polite">
+          <div className="flex items-center gap-2 text-sm font-medium text-primary">
+            <Check className="size-4" /> AI review ready
+          </div>
+          <p className="text-sm text-muted-foreground">{analysis.summary}</p>
+          {analysis.missingDetails.length > 0 ? (
+            <div>
+              <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+                Details worth adding
+              </p>
+              <ul className="mt-2 space-y-1 text-sm">
+                {analysis.missingDetails.map((detail) => (
+                  <li key={detail} className="flex gap-2">
+                    <span className="text-primary">•</span>
+                    <span>{detail}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No important details appear to be missing.</p>
+          )}
+        </div>
+      )}
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Category">
-          <select name="category" required className={inputClass} defaultValue="">
+          <select
+            name="category"
+            required
+            className={inputClass}
+            value={category}
+            onChange={(event) => setCategory(event.target.value)}
+          >
             <option value="" disabled>
               Choose a niche
             </option>
@@ -199,7 +282,13 @@ function PromptForm() {
           </select>
         </Field>
         <Field label="Tags (optional, comma separated)">
-          <input name="tags" placeholder="viral, shorts, storytelling" className={inputClass} />
+          <input
+            name="tags"
+            value={tags}
+            onChange={(event) => setTags(event.target.value)}
+            placeholder="viral, shorts, storytelling"
+            className={inputClass}
+          />
         </Field>
       </div>
       <Field label="Image (required)">
